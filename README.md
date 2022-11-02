@@ -53,7 +53,7 @@ PRIMARY KEY (user_id)
 <h3>Contraseña</h3>
 
 <h3>Passkeys</h3>
-A día 24 de octubre de 2022 salió iOS 16 para los iPhone de Apple. Una de las novedades de esta actualización fueron los passkeys, los cuales prometen ser el nuevo estándar para la identificación en páginas web, ya que Google, Microsoft y Apple han sido los colaboradores en ello. Consisten en que, mientras que una contraseña tradicional está almacenada en una base de datos, exponiéndola a posibles filtraciones y, además, siendo complicada de recordar cuanto más segura sea, el passkey lo que hace es generar dos claves, una privada y otra pública. La pública se almacena en el servidor y la privada en el móvil cliente, 
+A día 24 de octubre de 2022 salió iOS 16 para los iPhone de Apple. Una de las novedades de esta actualización fueron los passkeys, los cuales prometen ser el nuevo estándar para la identificación en páginas web, ya que Google, Microsoft y Apple han sido los colaboradores en ello. Consisten en que, mientras que una contraseña tradicional está almacenada en una base de datos, exponiéndola a posibles filtraciones y, además, siendo complicada de recordar cuanto más segura sea, el passkey lo que hace es generar dos claves, una privada y otra pública. La pública se almacena en el servidor y la privada en el llavero del móvil cliente, haciendo que gracias a esto el usuario pueda firmar de forma biométrica o bien con su huella o bien con su cara, un método más seguro que las contraseñas tradicionales.
 
 <h3>Autenticación en dos factores</h3>
 
@@ -62,6 +62,7 @@ A día 24 de octubre de 2022 salió iOS 16 para los iPhone de Apple. Una de las 
 <li>https://www.apachefriends.org/es/index.html</li>
 <li>https://openwebinars.net/blog/por-que-usar-terraform/</li>
 <li>https://code.tutsplus.com/es/tutorials/how-to-create-a-phpmysql-powered-forum-from-scratch--net-10188</li>
+<li>https://www.applesfera.com/tutoriales/he-estado-probando-passkeys-ios-16-como-funciona-que-experiencia-simplemente-maravillosa</li>
 </ul>
 
 # Autoría
