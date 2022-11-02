@@ -52,10 +52,12 @@ PRIMARY KEY (user_id)
 # Métodos de autenticación
 <h3>Contraseña</h3>
 
-<h3>Passkeys</h3>
-A día 24 de octubre de 2022 salió iOS 16 para los iPhone de Apple. Una de las novedades de esta actualización fueron los passkeys, los cuales prometen ser el nuevo estándar para la identificación en páginas web, ya que Google, Microsoft y Apple han sido los colaboradores en ello. Consisten en que, mientras que una contraseña tradicional está almacenada en una base de datos, exponiéndola a posibles filtraciones y, además, siendo complicada de recordar cuanto más segura sea, el passkey lo que hace es generar dos claves, una privada y otra pública. La pública se almacena en el servidor y la privada en el llavero del móvil cliente, haciendo que gracias a esto el usuario pueda firmar de forma biométrica o bien con su huella o bien con su cara, un método más seguro que las contraseñas tradicionales.
-
 <h3>Autenticación en dos factores</h3>
+
+<h3>Passkeys</h3>
+A día 24 de octubre de 2022 salió iOS 16 para los iPhone de Apple. Una de las novedades de esta actualización fueron los passkeys, los cuales prometen ser el nuevo estándar para la identificación en páginas web, ya que Google, Microsoft y Apple han sido los colaboradores en ello, y por el momento solo es posible usarlas en macOS, iOS o iPadOS, pero se planea convertirlo en el estándar de manera que se pueda utilizar en cualquier dispositivo que tenga sensores biométricos. Consisten en que, mientras que una contraseña tradicional está almacenada en una base de datos, exponiéndola a posibles filtraciones y, además, siendo complicada de recordar cuanto más segura sea, el passkey lo que hace es generar dos claves, una privada y otra pública. La pública se almacena en el servidor y la privada en el llavero de iCloud, haciendo que gracias a esto el usuario pueda firmar de forma biométrica o bien con su huella o bien con su cara, un método más seguro que las contraseñas tradicionales. Por lo tanto, implementaré este método en esta página web mediante una herramienta llamada OwnID.
+
+
 
 # Bibliografía
 <ul>
