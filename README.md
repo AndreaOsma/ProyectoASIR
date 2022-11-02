@@ -55,3 +55,6 @@ PRIMARY KEY (user_id)
 <li>https://openwebinars.net/blog/por-que-usar-terraform/</li>
 <li>https://code.tutsplus.com/es/tutorials/how-to-create-a-phpmysql-powered-forum-from-scratch--net-10188</li>
 </ul>
+
+# Autoría
+<p>Este proyecto ha sido creado por Andrea Osma Rafael, como proyecto de fin de grado del Grado Superior de Administración de Sistemas Informáticos en Red terminado en el año 2022.</p>
