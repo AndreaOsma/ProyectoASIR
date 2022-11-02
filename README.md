@@ -33,7 +33,7 @@
 # Foro
 <p>El objetivo de esta sección es realizar una página web, un foro creado en PHP con una base de datos mySQL para que los empleados puedan compartir sus pensamientos, ideas o quejas. Podríamos utilizar otros servicios como Slack o Discord, donde crear un foro con diferentes subforos con esta misma misión, pero haciendo nuestro propio foro nos aseguramos de tener una web propia, sin necesidad de depender de los servidores de terceros.</p>
 <h3>Relación de tablas</h3>
-En esta tabla
+Para crear el modelo de datos he utilizado Case Studio. Los datos se gestionarán así:
 
 <h3>Paso 1. Creación de las tablas de usuarios.</h3>
 <p>En primer lugar, es necesario crear una tabla dentro de la base de datos que recoja los usuarios que habrá en el foro. Al ser una red empresarial, estos serán los miembros de la empresa.</p>
