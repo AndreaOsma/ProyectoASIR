@@ -49,6 +49,14 @@ UNIQUE INDEX user_name_unique (user_name),
 PRIMARY KEY (user_id)
 ) TYPE=INNODB;</pre>
 
+# Métodos de autenticación
+<h3>Contraseña</h3>
+
+<h3>Passkeys</h3>
+A día 24 de octubre de 2022 salió iOS 16 para los iPhone de Apple. Una de las novedades de esta actualización fueron los passkeys, los cuales prometen ser el nuevo estándar para la identificación en páginas web, ya que Google, Microsoft y Apple han sido los colaboradores en ello. Consisten en que, mientras que una contraseña tradicional está almacenada en una base de datos, exponiéndola a posibles filtraciones y, además, siendo complicada de recordar cuanto más segura sea, el passkey lo que hace es generar dos claves, una privada y otra pública. La pública se almacena en el servidor y la privada en el móvil cliente, 
+
+<h3>Autenticación en dos factores</h3>
+
 # Bibliografía
 <ul>
 <li>https://www.apachefriends.org/es/index.html</li>
