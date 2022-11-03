@@ -35,6 +35,9 @@
 <h3>Relación de tablas</h3>
 Para crear el modelo de datos he utilizado Case Studio. Los datos se gestionarán así:
 
+<img src="https://user-images.githubusercontent.com/76048388/199696419-f960024c-487e-4eb6-9308-a8779877d8d3.png">
+
+
 <h3>Paso 1. Creación de las tablas de usuarios.</h3>
 <p>En primer lugar, es necesario crear una tabla dentro de la base de datos que recoja los usuarios que habrá en el foro. Al ser una red empresarial, estos serán los miembros de la empresa.</p>
 
