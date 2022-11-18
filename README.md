@@ -42,15 +42,15 @@ Para crear el modelo de datos he utilizado Case Studio. Los datos se gestionará
 <p>En primer lugar, es necesario crear una tabla dentro de la base de datos que recoja los usuarios que habrá en el foro. Al ser una red empresarial, estos serán los miembros de la empresa.</p>
 
 <pre>CREATE TABLE usuarios (
-user_code   INT(8) NOT NULL AUTO_INCREMENT,
-user_name   VARCHAR(30) NOT NULL,
-user_pass   VARCHAR(255) NOT NULL,
-user_email  VARCHAR(255) NOT NULL,
-user_date   DATETIME NOT NULL,
-user_level  INT(8) NOT NULL,
-UNIQUE INDEX user_name_unique (user_name),
-PRIMARY KEY (user_id)
-) TYPE=INNODB;</pre>
+cod_usuario   INT(8) NOT NULL AUTO_INCREMENT,
+nombre_usu   VARCHAR(30) NOT NULL,
+pass_usu   VARCHAR(255) NOT NULL,
+email_usu  VARCHAR(255) NOT NULL,
+fecha_registro   DATETIME NOT NULL,
+nivel_usu  INT(8) NOT NULL,
+UNIQUE INDEX nombre_usuario_unico (nombre_usu),
+PRIMARY KEY (cod_usuario)
+);</pre>
 
 # Métodos de autenticación
 <h3>Contraseña</h3>
