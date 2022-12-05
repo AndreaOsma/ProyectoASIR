@@ -39,7 +39,7 @@ Para crear el modelo de datos he utilizado Case Studio. Los datos se gestionará
 
 
 <h3>Paso 1. Creación de la tabla de usuarios.</h3>
-<p>En primer lugar, es necesario crear una tabla dentro de la base de datos que recoja los usuarios que habrá en el foro. Al ser una red empresarial, estos serán los miembros de la empresa.</p>
+<p>En primer lugar, es necesario crear una tabla dentro de la base de datos que recoja los usuarios que habrá en el foro. Llevará la columna cod_usuario, que será el id del usuario, de tipo integer, que no podrá estar vacía y que se irá incrementando cada vez que se meta una nueva fila.</p>
 
 <pre>CREATE TABLE usuarios (
 cod_usuario   INT(8) NOT NULL AUTO_INCREMENT,
