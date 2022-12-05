@@ -38,7 +38,7 @@ Para crear el modelo de datos he utilizado Case Studio. Los datos se gestionará
 <img src="https://user-images.githubusercontent.com/76048388/199696419-f960024c-487e-4eb6-9308-a8779877d8d3.png">
 
 
-<h3>Paso 1. Creación de la tabla de usuarios.</h3>
+<h3>Creación de la tabla de usuarios.</h3>
 <p>En primer lugar, es necesario crear una tabla dentro de la base de datos que recoja los usuarios que habrá en el foro. La primera columna será cod_usuario, que será el id del usuario, de tipo integer, que no podrá estar vacía y que se irá incrementando cada vez que se meta una nueva fila. Llevará también las columnas nombre_usu (para el nombre de usuario), pass_usu (para la contraseña), email_usu (para el correo electrónico), fecha_registro (que contendrá la fecha en la que se hizo el registro), y nivel_usu, ya que el usuario podrá ser administrador o estándar, por lo que si tiene un 1 será administrador y si tiene un 0 será estándar. La primary key será cod_usuario y nombre_usu debe ser único.</p>
 
 <pre>CREATE TABLE usuarios (
@@ -52,7 +52,51 @@ UNIQUE INDEX nombre_usuario_unico (nombre_usu),
 PRIMARY KEY (cod_usuario)
 );</pre>
 
-<h3>Paso 2. Creación de las tablas de usuarios.</h3>
+<h3>Creación de la tabla de categorías.</h3>
+<p>La segunda tabla será la de categorías, que será donde vayan englobados todos los temas. La primera columna es cod_cat, estructurada de la misma manera que en la tabla de usuarios, la segunda nombre_cat, donde irá el nombre de la categoría, y la tercera descr_cat, donde irá la descripción de la categoría. La columna nombre_cat será única y la primary key será cod_cat.</p>
+
+<pre>CREATE TABLE categorias (
+cod_cat          INT(8) NOT NULL AUTO_INCREMENT,
+nombre_cat       VARCHAR(255) NOT NULL,
+descr_cat     VARCHAR(255) NOT NULL,
+UNIQUE INDEX nombre_cat_unico (nombre_cat),
+PRIMARY KEY (cod_cat)
+);</pre>
+
+
+<h3>Creación de la tabla de temas.</h3>
+<p>La tercera tabla será la de temas. La primera columna es cod_tema, estructurada de la misma manera que en el resto de las tablas, la segunda descrip_tema, donde irá la descripción o asunto del tema, la tercera fecha_tema, que indicará la fecha en la que fue insertado el tema, la cuarta cat_tema, que será una foreign key donde aparezca el código de la categoría a la que pertenece el tema, y la quinta será autor_tema, donde irá una foreign key hacia el código del usuario que ha creado el tema. La primary key será cod_tema.</p>
+
+<pre>CREATE TABLE temas (
+cod_tema        INT(8) NOT NULL AUTO_INCREMENT,
+descrip_tema      VARCHAR(255) NOT NULL,
+fecha_tema      DATETIME NOT NULL,
+cat_tema       INT(8) NOT NULL,
+autor_tema        INT(8) NOT NULL,
+PRIMARY KEY (cod_tema)
+);</pre>
+
+<h3>Creación de la tabla de posts.</h3>
+<p>La cuarta tabla será la de posts, es decir, la de las respuestas a los temas. La primera columna es cod_post, estructurada de la misma manera que en el resto de las tablas, la segunda texto_post, donde irá el texto que el usuario meta en él, la tercera fecha_post, que indicará la fecha en la que fue insertado el post, la cuarta tema_post, que será una foreign key donde aparezca el código del tema al que responde el post, y la quinta será autor_post, donde irá una foreign key hacia el código del usuario que ha creado el post. La primary key será cod_post.</p>
+
+<pre>CREATE TABLE posts (
+cod_post         INT(8) NOT NULL AUTO_INCREMENT,
+texto_post        TEXT NOT NULL,
+fecha_post       DATETIME NOT NULL,
+tema_post      INT(8) NOT NULL,
+autor_post     INT(8) NOT NULL,
+PRIMARY KEY (cod_post)
+);</pre>
+
+<h3>Añadiendo las foreign keys</h3>
+<p>Por último, ya que no lo hemos hecho en el código insertado anteriormente, insertaremos tres comandos alter table para crear las foreign keys en cada una de las tablas, con un "on delete on restrict update cascade", que no nos dejará borrar una categoría si hay un tema, un usuario si tiene temas o un tema si tiene posts. </p>
+
+<pre>ALTER TABLE temas ADD FOREIGN KEY(cat_tema) REFERENCES categorias(cod_cat) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE temas ADD FOREIGN KEY(autor_tema) REFERENCES usuarios(cod_usuario) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+ALTER TABLE posts ADD FOREIGN KEY(tema_post) REFERENCES temas(cod_tema) ON DELETE RESTRICT ON UPDATE CASCADE;
+</pre>
 
 # Métodos de autenticación
 <h3>Contraseña</h3>
