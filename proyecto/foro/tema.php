@@ -28,23 +28,24 @@ else
 {
                 echo '<table border="1">
                       <tr>
-                        <th></th>
+                        <th>Contenido</th><th>Fecha y autor</th>
                       </tr>'; 
                      
                 while($row = mysqli_fetch_assoc($result))
-                {               
+                {              
                     echo '<tr>';
                         echo '<td class="leftpart">';
-                            echo '<p>' . date('d-m-Y', strtotime($row['fecha_post'])) . '</p><p>' . $row['nombre_usu'] . '</p>';
+                            echo $row['texto_post'];
                         echo '</td>';
                         echo '<td class="rightpart">';
-                            echo $row['texto_post'];
+                            echo '<p>' . date('d-m-Y', strtotime($row['fecha_post'])) . '</p><p>' . $row['nombre_usu'] . '</p>';
                         echo '</td>';
                     echo '</tr>';
                 }
             }
 
-echo '<form method="post" action="respuesta.php?cod_tema='.$_GET["cod_tema"].'">
+echo '<h3>Escribe aquí tu respuesta</h3>
+    <form method="post" action="respuesta.php?cod_tema='.$_GET["cod_tema"].'">
     <textarea name="texto-post"></textarea>
     <input type="submit" value="Responder" />
 </form>';

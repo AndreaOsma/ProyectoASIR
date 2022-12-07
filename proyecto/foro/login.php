@@ -64,7 +64,8 @@ else
             {
                 if(mysqli_num_rows($result) == 0)
                 {
-                    echo 'El nombre de usuario y la contraseña no coinciden. Por favor, inténtalo de nuevo.';
+                    echo 'El nombre de usuario y/o la contraseña son incorrectos. Por favor, inténtalo de nuevo.<br/>';
+                    echo '<a href="login.php">Volver al inicio de sesión</a>';
                 }
                 else
                 {

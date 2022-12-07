@@ -11,12 +11,19 @@ if($sesion_iniciada == false)
 else {
     if($_SERVER['REQUEST_METHOD'] != 'POST')
     {
-        echo '<h2>Crear una categoría</h2>';
-        echo '<form method="post" action="">
-            Nombre de la categoría: <input type="text" name="nombre_cat" /> <br/>
-            Descripción de la categoría: <textarea name="descr_cat" /></textarea>
-            <input type="submit" value="Añadir categoría" />
-        </form>';
+        if($_SESSION['nivel_usu'] == 1)
+                {
+                    echo '<h2>Crear una categoría</h2>';
+                    echo '<form method="post" action="">
+                        Nombre de la categoría: <input type="text" name="nombre_cat" /> <br/>
+                        Descripción de la categoría: <textarea name="descr_cat" /></textarea>
+                        <input type="submit" value="Añadir categoría" />
+                        </form>';
+                }
+                else
+                {
+                    echo 'No puedes crear categorías si no eres administrador.';
+                }
     }
     else
     {
