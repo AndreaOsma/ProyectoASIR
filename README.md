@@ -112,6 +112,8 @@ A día 24 de octubre de 2022 salió iOS 16 para los iPhone de Apple. Una de las 
 <h3>Cabecera y pie de página</h3>
 En primer lugar, crearemos un archivo <b>header.php</b>. Este archivo contendrá el menú, y estará incluido al principio del código PHP de cada archivo con el comando: <pre>include "header.php";</pre>
 <img src="https://user-images.githubusercontent.com/76048388/206175615-25872325-57e4-4b85-a42d-8cddb0150a04.png">
+El código fuente lo podemos ver en este archivo del repositorio:
+<a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/header.php">header.php</a>
 
 Crearemos también un archivo <b>footer.php</b> que en este caso contendrá mi nombre, pero podría contener cualquier otra información como el copyright o enlaces de interés, e irá incluido al final del código PHP de cada archivo con el comando: <pre>include footer.php;</pre>
 
