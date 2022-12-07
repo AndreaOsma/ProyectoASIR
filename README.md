@@ -246,12 +246,102 @@ Finalmente, al acceder a la vista del tema veremos que la respuesta se ha guarda
 El código fuente lo podemos ver en este archivo del repositorio:
 <a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/respuesta.php">respuesta.php</a>
 
+# Terraform
+Para esta sección utilizaré Ubuntu 22.04 en modo Terminal.
+En primer lugar utilizaremos estos comandos para guardar el repositorio en el que está Terraform y actualizar la lista de repositorios.
+<pre><code>wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+sudo apt update && sudo apt install terraform</code></pre>
+Después instalaremos Terraform mediante el comando:
+<pre><code>sudo apt-get install terraform</code></pre>
+
+Verificaremos que está bien instalado:
+<pre><code>terraform -help
+Usage: terraform [global options] <subcommand> [args]
+
+The available commands for execution are listed below.
+The primary workflow commands are given first, followed by
+less common or more advanced commands.
+
+Main commands:
+  init          Prepare your working directory for other commands
+  validate      Check whether the configuration is valid
+  plan          Show changes required by the current configuration
+  apply         Create or update infrastructure
+  destroy       Destroy previously-created infrastructure
+  </pre></code>
+
+A partir de este punto, podríamos configurarlo para usar la nube de nuestra elección, yo elegiré AWS, de la cual ya tengo una cuenta creada.
+
+Instalamos la CLI de AWS:
+<pre><code>
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+</code></pre>
+
+Iniciaremos sesión en la web de AWS, donde tendremos que pulsar en nuestro nombre de usuario y posteriormente en credenciales de seguridad.
+<br/>
+<img src="https://user-images.githubusercontent.com/76048388/206243145-495e151b-17db-4b9e-a00b-749e64f1e661.png">
+
+Dentro pulsaremos en "Claves de acceso" y le daremos a "Crear una clave de acceso".
+<img src="https://user-images.githubusercontent.com/76048388/206243625-4ea0c9ce-a916-405c-a434-72661ecf132e.png">
+
+Descargaremos el archivo de claves. Estas son las claves de acceso del usuario raíz, y no se deben compartir con nadie que no se quiera que tenga acceso a nuestra cuenta de AWS ya que puede tener objetivos maliciosos.
+<img src="https://user-images.githubusercontent.com/76048388/206243742-043d7416-5caf-4b8a-abd4-91af80a18484.png">
+
+Volveremos a la terminal de Ubuntu, donde definiremos dos variables de entorno.
+
+<pre><code>
+export AWS_ACCESS_KEY_ID=tuiddeacceso
+export AWS_SECRET_ACCESS_KEY=tucontraseñadeacceso
+</code></pre>
+
+Crearemos una carpeta para la instancia de Terraform y nos moveremos a esa carpeta.
+<pre><code>
+mkdir terraform-aws-instance
+cd terraform-aws-instance
+</code></pre>
+
+Crearemos un archivo para la configuración de AWS.
+<pre><code>touch main.tf</code></pre>
+
+Abriremos el archivo con un editor de texto, como por ejemplo nano, e introduciremos el siguiente código. El bloque "Terraform" tendrá la configuración de Terraform. El bloque "provider" define el proveedor que utilizaremos, en este caso Terraform. La región es la ubicación donde está el servidor que utilizaremos, ya que Amazon tiene servidores por todo el mundo. Esto determinará los precios y la latencia a la hora de acceder. El bloque "resource" definirá la infraestructura que usaremos, primero vendrá el tipo de instancia y después el nombre, que en mi caso es "server_proyecto". El AMI es el ID de la imagen de máquina que se utilizará, la que usaré será de Ubuntu. Por último, en instance_type viene el tipo de instancia, y en este caso usaremos t2.micro ya que este califica para el tier gratis de Amazon.
+<pre><code>terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.16"
+    }
+  }
+
+  required_version = ">= 1.2.0"
+}
+
+provider "aws" {
+  region  = "eu-west-1"
+}
+
+resource "aws_instance" "server_proyecto" {
+  ami           = "ami-830c94e3"
+  instance_type = "t2.micro"
+
+  tags = {
+    Name = "InstanciaProyecto"
+  }
+}
+</code></pre>
+
+Una vez configurado el archivo, lo guardaremos y ejecutaremos el siguiente comando para inicializar Terraform.
+
+<pre><code>terraform init</code></pre>
 
 # Bibliografía
 <ul>
-<li>https://www.apachefriends.org/es/index.html</li>
-<li>https://openwebinars.net/blog/por-que-usar-terraform/</li>
-<li>https://code.tutsplus.com/es/tutorials/how-to-create-a-phpmysql-powered-forum-from-scratch--net-10188</li>
+  <li>https://www.apachefriends.org/es/index.html</li>
+  <li>https://openwebinars.net/blog/por-que-usar-terraform/</li>
+  <li>https://code.tutsplus.com/es/tutorials/how-to-create-a-phpmysql-powered-forum-from-scratch--net-10188</li>
+  <li>https://developer.hashicorp.com/terraform/tutorials/aws-get-started</li>
 </ul>
 
 # Autoría
