@@ -246,7 +246,7 @@ Finalmente, al acceder a la vista del tema veremos que la respuesta se ha guarda
 El código fuente lo podemos ver en este archivo del repositorio:
 <a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/respuesta.php">respuesta.php</a>
 
-# Terraform
+# Configurando Terraform
 Para esta sección utilizaré Ubuntu 22.04 en modo Terminal.
 En primer lugar utilizaremos estos comandos para guardar el repositorio en el que está Terraform y actualizar la lista de repositorios.
 <pre><code>wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
@@ -306,7 +306,7 @@ cd terraform-aws-instance
 Crearemos un archivo para la configuración de AWS.
 <pre><code>touch main.tf</code></pre>
 
-Abriremos el archivo con un editor de texto, como por ejemplo nano, e introduciremos el siguiente código. El bloque "Terraform" tendrá la configuración de Terraform. El bloque "provider" define el proveedor que utilizaremos, en este caso Terraform. La región es la ubicación donde está el servidor que utilizaremos, ya que Amazon tiene servidores por todo el mundo. Esto determinará los precios y la latencia a la hora de acceder. El bloque "resource" definirá la infraestructura que usaremos, primero vendrá el tipo de instancia y después el nombre, que en mi caso es "server_proyecto". El AMI es el ID de la imagen de máquina que se utilizará, la que usaré será de Ubuntu. Por último, en instance_type viene el tipo de instancia, y en este caso usaremos t2.micro ya que este califica para el tier gratis de Amazon.
+Abriremos el archivo con un editor de texto, como por ejemplo nano, e introduciremos el siguiente código. El bloque "Terraform" tendrá la configuración de Terraform. El bloque "provider" define el proveedor que utilizaremos, en este caso Terraform. La región es la ubicación donde está el servidor que utilizaremos, ya que Amazon tiene servidores por todo el mundo. Esto determinará los precios y la latencia a la hora de acceder. El bloque "resource" definirá la infraestructura que usaremos, primero vendrá el tipo de instancia y después el nombre, que en mi caso es "server_proyecto". El AMI es el ID de la imagen de máquina que se utilizará, la que usaré será de Ubuntu 22.04. Por último, en instance_type viene el tipo de instancia, y en este caso usaremos t2.micro ya que este califica para el tier gratis de Amazon.
 <pre><code>terraform {
   required_providers {
     aws = {
@@ -323,7 +323,7 @@ provider "aws" {
 }
 
 resource "aws_instance" "server_proyecto" {
-  ami           = "ami-830c94e3"
+  ami           = "ami-05e786af422f8082a"
   instance_type = "t2.micro"
 
   tags = {
@@ -336,12 +336,52 @@ Una vez configurado el archivo, lo guardaremos y ejecutaremos el siguiente coman
 
 <pre><code>terraform init</code></pre>
 
+Para validar el archivo de configuración podremos utilizar el siguiente comando.
+<pre><code>terraform validate</code></pre>
+
+Aplicaremos la configuración con el siguiente comando:
+<pre><code>terraform apply</code></pre>
+
+Saldrá una lista con todos los archivos que se van a añadir, y al final nos preguntará si queremos que se lleven a cabo esas acciones. Cuando aceptemos se empezará a crear la instancia.
+<img src="https://user-images.githubusercontent.com/76048388/206249354-c82a44c3-9c2b-41ac-a92f-56e32c406f44.png">
+
+Para ver el estado de la instancia podemos ejecutar el siguiente comando.
+<pre><code>terraform show</code></pre>
+
+Si quisiéramos destruir la instancia una vez finalizado el uso, para evitar costes extra o posibles riesgos, usaríamos el siguiente comando:
+<pre><code>terraform destroy</code></pre>
+
+# Configurando Kubernetes
+En esta parte es donde Terraform podrá de ser de mayor ayuda, ya que Kubernetes (EKS en AWS) cuesta unos $0.10 por hora, y la mayor ventaja que tiene Terraform es poder destruir la instancia en cualquier momento, y así no incurrir en gastos extra.
+Para instalar la CLI de Kubernetes en Ubuntu, usaré estos comandos:
+<pre><code>
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+</code></pre>
+También necesitaremos AWS IAM Authenticator:
+<pre><code>
+curl -Lo aws-iam-authenticator https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v0.5.9/aws-iam-authenticator_0.5.9_linux_amd64
+chmod +x ./aws-iam-authenticator
+mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$PATH:$HOME/bin
+echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+</code></pre>
+
+Comprobamos que funciona:
+<pre><code>
+aws-iam-authenticator help
+</code></pre>
+
+# Instalando Apache
+Una vez realizada la configuración, habremos creado un servidor, que actuará como cualquier otra máquina en la que hubiéramos instalado Ubuntu Server 22.04.
+
+
 # Bibliografía
 <ul>
   <li>https://www.apachefriends.org/es/index.html</li>
   <li>https://openwebinars.net/blog/por-que-usar-terraform/</li>
   <li>https://code.tutsplus.com/es/tutorials/how-to-create-a-phpmysql-powered-forum-from-scratch--net-10188</li>
   <li>https://developer.hashicorp.com/terraform/tutorials/aws-get-started</li>
+  <li>https://developer.hashicorp.com/terraform/tutorials/kubernetes/eks</li>
 </ul>
 
 # Autoría
