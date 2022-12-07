@@ -1,13 +1,16 @@
-# Red empresarial en AWS
+# Implantación de foro para una red de empresa en AWS
 <p>Este proyecto se compone de varias partes.</p>
 <ul>
-  <li>Implantación de servidor Apache y servidor mySQL.</li>
-  <li>Foro programado en PHP y mySQL.</li>
-  <li>Implantación de servidor de chat y de servidor mail.</li>
+  <li>Introducción</li>
+  <li>Entorno de pruebas</li>
+  <li>Programación de foro en PHP y mySQL</li>
+  <li>Implantanción en AWS mediante Terraform y Kubernetes</li>
 </ul>
 
+# Introducción
+
 # Entorno de pruebas
-<h3><img src="https://user-images.githubusercontent.com/76048388/199499904-ccf173ce-fb43-4ca6-95d0-b251fd15381c.png"></h3>
+<h3>XAMPP</h3>
 <p>XAMPP es un entorno de desarrollo enfocado a la programación en PHP. La distribución incluye el servidor web Apache, un servidor de bases de datos mySQL, un servidor FTP Filezilla, el servidor de correo Mercury y el contenedor Tomcat para utilizar el lenguaje de programación Java. Puesto que este proyecto estará programado en PHP, JavaScript y mySQL, solo necesitaremos los dos primeros (Apache y mySQL). XAMPP funciona de manera que crea estos servidores en la máquina donde se instalen, pudiendo luego acceder a ellos o bien desde la IP del dispositivo y el puerto del servidor (por ejemplo: http://192.168.1.60:80 para acceder al servidor Apache, es decir, a la web principal) o bien accediendo desde la propia máquina poniendo http://localhost en el navegador. Se suele acceder como localhost, ya que el propósito principal de XAMPP, si bien se pueden desplegar páginas web con él, es ser usado como entorno de pruebas a la hora de programar una página web. Por lo tanto, durante el proyecto usaré XAMPP para probar cada cambio que haga al programar la web.</p>
 <p>Para que estos servidores funcionen, simplemente una vez instalado XAMPP, que se puede descargar desde <a href="https://www.apachefriends.org/es/index.html">aquí</a>, entraremos a su panel de control como administrador.</p>
 <img src="https://user-images.githubusercontent.com/76048388/199494030-504ff5a0-0205-41ee-b8f0-bfc5e50b988e.png">
@@ -21,7 +24,7 @@
 
 <br/>
 
-<h3><img src="https://user-images.githubusercontent.com/76048388/199499673-c9b32c6c-d811-4aec-b8b8-a928749529b2.png"></h3>
+<h3>Terraform</h3>
 <p>Una vez programada la página web habiendo utilizado XAMPP como entorno de pruebas, utilizaré <a href="https://www.terraform.io">Terraform</a> para el despliegue en AWS. Terraform permite definir la infraestructura como código, esto quiere decir que es posible escribir en un fichero de texto la definición de la infraestructura usando un lenguaje de programación declarativo y simple. Esto tiene varios beneficios:
 <ul>
 <li>En primer lugar, que toda la infraestructura utilizada se puede administrar desde una sola aplicación, lo cual a una empresa, donde a la larga existen un volumen de servicios elevados, le permite desplegar estos servicios y sus dependencias, y cuando se quiera dejar de usar el proveedor que se esté utilizando (como por ejemplo AWS), cerrar estos servicios y dependencias para poder llevarlos a otro proveedor. Si no se utilizase Terraform, podría quedar algún servicio abierto por error, suponiendo esto un coste extra a la empresa o usuario, ya que todos los servicios que se utilicen en la nube tienen un coste que cobran a final de mes. Con Terraform, todo quedaría cerrado evitando estas situaciones</li>
@@ -568,6 +571,15 @@ Una vez configurados todos los archivos, iniciaremos Terraform mediante el sigui
 Una vez creado, podremos ver que está activo mediante la consola.
 <img src="https://user-images.githubusercontent.com/76048388/206270144-f7001f7b-bcd2-4a75-bf7d-55b1c64154d3.png">
 
+# Implantación del foro en un servidor Nginx
+Una vez sabiendo cómo se crea el clúster de Kubernetes, solamente queda habilitar el servidor web, para lo que utilizaremos Nginx, y el servidor mySQL.
+Crearé un archivo llamado <b>nginx.tf</b> que llevará dentro el módulo Nginx.
+<pre><code>
+module "eks-ingress-nginx" {
+  source  = "lablabs/eks-ingress-nginx/aws"
+  version = "1.2.0"
+}
+</code></pre>
 
 # Acceder por SSH
 Una vez realizada la configuración, habremos creado un servidor, que actuará como cualquier otra máquina en la que hubiéramos instalado Ubuntu Server 22.04.
@@ -595,6 +607,7 @@ Copiaremos ese DNS o IP y para acceder por SSH usaremos el siguiente comando:
   <li>https://developer.hashicorp.com/terraform/tutorials/aws-get-started</li>
   <li>https://developer.hashicorp.com/terraform/tutorials/kubernetes/eks</li>
   <li>https://rm-rf.es/como-conectar-ssh-instancia-aws-ec2-linux/#:~:text=C%C3%B3mo%20conectar%20por%20SSH%20a%20una%20instancia%20AWS,de%20instancia%2C%20IP%20y%20su%20DNS%20p%C3%BAblico%20</li>
+  <li>https://developer.hashicorp.com/terraform/tutorials/kubernetes/kubernetes-provider</li>
 </ul>
 
 # Autoría
