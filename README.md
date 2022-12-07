@@ -366,13 +366,225 @@ mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator
 echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
 </code></pre>
 
-Comprobamos que funciona:
-<pre><code>
-aws-iam-authenticator help
+Copiaremos el siguiente repositorio:
+<pre><code>git clone https://github.com/hashicorp/learn-terraform-provision-eks-cluster</code></pre>
+
+Nos moveremos al repositorio:
+<pre><code>cd learn-terraform-provision-eks-cluster</code></pre>
+
+Al listar veremos que dentro hay varios archivos:
+<img src="https://user-images.githubusercontent.com/76048388/206292640-19471772-352e-4c19-8a51-d5ff9c938734.png">
+
+El archivo <b>variables.tf</b> sirve para definir las variables, como por ejemplo la región. Si hacemos un cat del archivo, nos saldrá este contenido, que podremos ajustar al que necesitemos.
+<pre><code>variable "region" {
+  description = "AWS region"
+  type        = string
+  default     = "eu-west-1"
+}
 </code></pre>
 
-# Instalando Apache
+El archivo <b>vpc.tf</b> contiene el VPC, las subredes, las zonas de disponibilidad, etcétera.
+<pre><code>module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "3.14.2"
+
+  name = "education-vpc"
+
+  cidr = "10.0.0.0/16"
+  azs  = slice(data.aws_availability_zones.available.names, 0, 3)
+
+  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  public_subnets  = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
+
+  enable_nat_gateway   = true
+  single_nat_gateway   = true
+  enable_dns_hostnames = true
+
+  public_subnet_tags = {
+    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    "kubernetes.io/role/elb"                      = 1
+  }
+
+  private_subnet_tags = {
+    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
+    "kubernetes.io/role/internal-elb"             = 1
+  }
+}
+</code></pre>
+
+En el archivo <b>terraform.tf</b> veremos los proveedores requeridos para Kubernetes y sus versiones.
+<pre><code>terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.15.0"
+    }
+
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.1.0"
+    }
+
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 3.4.0"
+    }
+
+    cloudinit = {
+      source  = "hashicorp/cloudinit"
+      version = "~> 2.2.0"
+    }
+
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "~> 2.12.1"
+    }
+  }
+
+  required_version = "~> 1.3"
+}</code></pre>
+
+En el archivo security-groups.tf podremos definir los grupos de seguridad a modo de firewall.
+<pre><code>resource "aws_security_group" "node_group_one" {
+  name_prefix = "node_group_one"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    from_port = 22
+    to_port   = 22
+    protocol  = "tcp"
+
+    cidr_blocks = [
+      "10.0.0.0/8",
+    ]
+  }
+}
+
+resource "aws_security_group" "node_group_two" {
+  name_prefix = "node_group_two"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress {
+    from_port = 22
+    to_port   = 22
+    protocol  = "tcp"
+
+    cidr_blocks = [
+      "192.168.0.0/16",
+    ]
+  }
+}</code></pre>
+
+En el archivo <b>outputs.tf</b> aparecerán las salidas que se obtendrán al terminar de iniciar el Terraform.
+
+<pre><code>output "cluster_id" {
+  description = "EKS cluster ID"
+  value       = module.eks.cluster_id
+}
+
+output "cluster_endpoint" {
+  description = "Endpoint for EKS control plane"
+  value       = module.eks.cluster_endpoint
+}
+
+output "cluster_security_group_id" {
+  description = "Security group ids attached to the cluster control plane"
+  value       = module.eks.cluster_security_group_id
+}
+
+output "region" {
+  description = "AWS region"
+  value       = var.region
+}
+
+output "cluster_name" {
+  description = "Kubernetes Cluster Name"
+  value       = local.cluster_name
+}</code></pre>
+
+Por último, en el archivo <b>eks-cluster</b> tenemos las configuraciones relativas al EKS. Lo he ajustado a t2.micro ya que haré el mínimo uso.
+<pre><code>module "eks" {
+  source  = "terraform-aws-modules/eks/aws"
+  version = "18.26.6"
+
+  cluster_name    = local.cluster_name
+  cluster_version = "1.22"
+
+  vpc_id     = module.vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
+
+  eks_managed_node_group_defaults = {
+    ami_type = "AL2_x86_64"
+
+    attach_cluster_primary_security_group = true
+
+    # Disabling and using externally provided security groups
+    create_security_group = false
+  }
+
+  eks_managed_node_groups = {
+    one = {
+      name = "node-group-1"
+
+      instance_types = ["t2.micro"]
+
+      min_size     = 1
+      max_size     = 3
+      desired_size = 2
+
+      pre_bootstrap_user_data = <<-EOT
+      echo 'foo bar'
+      EOT
+
+      vpc_security_group_ids = [
+        aws_security_group.node_group_one.id
+      ]
+    }
+
+    two = {
+      name = "node-group-2"
+
+      instance_types = ["t2.micro"]
+
+      min_size     = 1
+      max_size     = 2
+      desired_size = 1
+
+      pre_bootstrap_user_data = <<-EOT
+      echo 'foo bar'
+      EOT
+
+      vpc_security_group_ids = [
+        aws_security_group.node_group_two.id
+      ]
+    }
+  }
+}
+</code></pre>
+
+Una vez configurados todos los archivos, iniciaremos Terraform mediante el siguiente comando:
+<pre><code>terraform init</code></pre>
+
+Una vez creado, podremos ver que está activo mediante la consola.
+<img src="https://user-images.githubusercontent.com/76048388/206270144-f7001f7b-bcd2-4a75-bf7d-55b1c64154d3.png">
+
+
+# Acceder por SSH
 Una vez realizada la configuración, habremos creado un servidor, que actuará como cualquier otra máquina en la que hubiéramos instalado Ubuntu Server 22.04.
+Querremos acceder por SSH, para ello tenemos primero que configurar la CLI de AWS con el siguiente comando. Pedirá las claves de acceso que generamos anteriormente.
+<pre><code>aws configure</code></pre>
+Ahora tenemos que crear un keypair en la CLI de AWS con el siguiente comando. Esto generará una clave pública y una privada.
+<pre><code>aws ec2 create-key-pair --key-name ElNombreQueQueramos</code></pre>
+
+Copiaremos el contenido de "KeyMaterial" a un archivo vacío en la ruta que queramos, lo normal es guardarlo en la carpeta ~/.ssh.
+
+Nos aseguraremos de la IP pública o del DNS público de la instancia de AWS mediante uno de los siguientes comandos:
+<pre><code>terraform show | grep public_dns
+terraform show | grep public_ip</code></pre>
+
+Copiaremos ese DNS o IP y para acceder por SSH usaremos el siguiente comando:
+<pre><code>ssh -i RutaClavePrivada ec2-user@ec2-34-*-*-*.eu-west-1.compute.amazonaws.com</code></pre>
+
 
 
 # Bibliografía
@@ -382,6 +594,7 @@ Una vez realizada la configuración, habremos creado un servidor, que actuará c
   <li>https://code.tutsplus.com/es/tutorials/how-to-create-a-phpmysql-powered-forum-from-scratch--net-10188</li>
   <li>https://developer.hashicorp.com/terraform/tutorials/aws-get-started</li>
   <li>https://developer.hashicorp.com/terraform/tutorials/kubernetes/eks</li>
+  <li>https://rm-rf.es/como-conectar-ssh-instancia-aws-ec2-linux/#:~:text=C%C3%B3mo%20conectar%20por%20SSH%20a%20una%20instancia%20AWS,de%20instancia%2C%20IP%20y%20su%20DNS%20p%C3%BAblico%20</li>
 </ul>
 
 # Autoría
