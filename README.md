@@ -130,14 +130,28 @@ El código fuente lo podemos ver en este archivo del repositorio:
 
 <h3>Página de registro</h3>
 Este foro será privado, por lo que para ver o crear contenido será necesario registrarse mediante la página de registro, que contendrá un formulario. El formulario tendrá cuatro campos, que serán el nombre de usuario, la contraseña, una repetición de la contraseña y el email del usuario.
+<img src="https://user-images.githubusercontent.com/76048388/206184530-a8011f57-cfc4-47a9-a967-d05f15d5686a.png">
+
 El código funcionará de manera que, primero, tendrá incluidos los archivos <b>connect.php</b> y <b>header.php</b>, el primero para mostrar la base de datos y el segundo para mostrar el menú de navegación. Si no hay ya ningunos datos guardados con el método post, mostrará el formulario, que el usuario rellenará para poder iniciar sesión. Si ya hay datos, comprobará que estos estén bien rellenados:
 <ul>
-  <li>Si el usuario contiene algún símbolo, mostrará una alerta en JavaScript de que no puede añadirlo ya que el nombre de usuario solo puede contener letras o números, y añadirá el mismo texto de error al array $errors.</li>
+  <li>Si el usuario contiene algún símbolo, mostrará una alerta en JavaScript de que no puede añadirlo ya que el nombre de usuario solo puede contener letras o números, y añadirá el mismo texto de error al array $errors, que contendrá todos los errores para así mostrar todos los errores en una lista.</li>
+  <img src="https://user-images.githubusercontent.com/76048388/206184907-98131fbd-5fe9-4d60-8e72-0d05ff8e92e8.png">
+  <img src="https://user-images.githubusercontent.com/76048388/206184941-50514c03-fde9-4940-9f65-3623519ed7f4.png">
+  <img src="https://user-images.githubusercontent.com/76048388/206184978-c2d289b3-0f35-48fa-a66b-54d3bb0da094.png">
+
   <li>Si el nombre de usuario contiene más de 30 caracteres, mostrará otra alerta y añadirá ese error al array.</li>
-  <li>Otro error se mostrará si no hay nada en el campo nombre de usuario.</li>
-  <li>Otro ocurrirá si el campo de contraseña y el de repetir contraseña no coinciden.</li>
+   <img src="https://user-images.githubusercontent.com/76048388/206185303-2ffd5c3e-544b-44b7-970c-e0925d98e020.png">
+  
+  <li>Otro error ocurrirá si el campo de contraseña y el de repetir contraseña no coinciden.</li>
+  <img src="https://user-images.githubusercontent.com/76048388/206185635-3102055c-b228-47bd-bf6d-acfa72e1ce01.png">
+
   <li>El último error se dará si cualquiera de los campos de contraseña están vacíos.</li>
+  <img src="https://user-images.githubusercontent.com/76048388/206185715-c4db57d2-b959-4792-8f0b-1531558a4b1d.png">
+
   <li>El correo electrónico es opcional, por lo que no se mostrará ningún error.</li>
+  <img src="https://user-images.githubusercontent.com/76048388/206185798-c36e1c9e-8c8a-4e90-98f2-fcb03500ba8d.png">
+  <img src="https://user-images.githubusercontent.com/76048388/206185832-6d713eac-476e-4a38-83ae-566812e4a478.png">
+
 </ul>
 Si todos los datos son correctos y el usuario no está duplicado, se procederá a insertar mediante mySQL los datos en la base de datos. Por defecto, al usuario se le asignará el nivel de usuario 0, que significa que este usuario no es administrador. Si se quisiera cambiar, lo haría una persona con acceso a la base de datos (el administrador) modificando el campo <b>nivel_usu</b> de 0 a 1. La contraseña se hasheará cuando se incluya en la base de datos mediante la función sha1, que le hace un encriptado sha1 para que ni siquiera una persona con acceso a la base de datos pueda saber la contraseña de cada usuario. Además, se utilizará la función <b>mysqli_real_escape_string</b> al introducir texto plano para dificultar los ataques por inyección SQL.
 Si la inserción no se ha podido realizar con éxito, mostrará una alerta, y si se ha podido mostrará un mensaje de éxito y un enlace al inicio de sesión.
