@@ -98,16 +98,6 @@ ALTER TABLE temas ADD FOREIGN KEY(autor_tema) REFERENCES usuarios(cod_usuario) O
 ALTER TABLE posts ADD FOREIGN KEY(tema_post) REFERENCES temas(cod_tema) ON DELETE RESTRICT ON UPDATE CASCADE;
 </pre>
 
-# Métodos de autenticación
-<h3>Contraseña</h3>
-Como es normal en todas las páginas web, el usuario tendrá una contraseña con la que acceder a la página web. Esta contraseña estará definida en la base de datos de usuarios, codificada. Habrá definida una función, que será la que en la página del registro codifique la contraseña para después meterla en la base de datos, y que en la página del login la descodificará.
-
-<h3>Autenticación en dos factores</h3>
-Al ser una página empresarial, queremos que tenga seguridad y que no pueda acceder cualquier persona. Para ello, el usuario tendrá que tener activada la verificación en dos pasos o 2FA, un método que actúa como una segunda capa de seguridad al hacer que el usuario tenga que meter un código que recibirá por SMS, correo, o bien usando una aplicación que tenga este propósito como pueden ser Google Authenticator o Authy. En esta página web se dará mediante correo o aplicación. Una vez lo active, el usuario tendrá que descargar unos códigos que le servirán para poder recuperar su cuenta en el caso de que perdiese el acceso a su correo o aplicación.
-
-<h3>Passkeys</h3>
-A día 24 de octubre de 2022 salió iOS 16 para los iPhone de Apple. Una de las novedades de esta actualización fueron los passkeys, los cuales prometen ser el nuevo estándar para la identificación en páginas web, ya que Google, Microsoft y Apple han sido los colaboradores en ello, y por el momento solo es posible usarlas en macOS, iOS o iPadOS, pero se planea convertirlo en el estándar de manera que se pueda utilizar en cualquier dispositivo que tenga sensores biométricos. Consisten en que, mientras que una contraseña tradicional está almacenada en una base de datos, exponiéndola a posibles filtraciones y, además, siendo complicada de recordar cuanto más segura sea, el passkey lo que hace es generar dos claves, una privada y otra pública. La pública se almacena en el servidor y la privada en el llavero de iCloud, haciendo que gracias a esto el usuario pueda firmar de forma biométrica o bien con su huella o bien con su cara, un método más seguro que las contraseñas tradicionales. Por lo tanto, implementaré este método en esta página web mediante una herramienta llamada OwnID.
-
 # Código del foro
 <h3>Cabecera y pie de página</h3>
 En primer lugar, crearemos un archivo <b>header.php</b>. Este archivo contendrá el menú, y estará incluido al principio del código PHP de cada archivo con la línea: <pre>include "header.php";</pre>
@@ -161,14 +151,53 @@ El código fuente lo podemos ver en este archivo del repositorio:
 
 <h3>Inicio de sesión</h3>
 Una vez creado un usuario, querremos iniciar sesión para ver el contenido del foro. Para esto tenemos un archivo <b>login.php</b> que realiza una selección de la base de datos.
-Al igual que con la página de registro, primero incluiremos <b>connect.php</b> y <b>header.php</b>. Si se detecta que ya hay una sesión iniciada, se imprimirá un mensaje diciendo que ya se ha iniciado sesión y que puedes cerrar sesión si quieres (con un enlace al archivo de cierre de sesión). Si la sesión no está iniciada y no hay ya datos enviados mediante post, saldrá un formulario que pedirá el usuario y la contraseña. Si el campo de nombre de usuario está vacío, se añadirá un texto de error al array $errors como anteriormente, y lo mismo ocurrirá si no hay nada en la contraseña. Si ocurre cualquiera de estas situaciones, al enviar el formulario saldrá una lista con los errores. Si no ocurre ninguno de estos errores, se procederá a seleccionar el código de usuario, el nombre y el nivel, donde el nombre de usuario sea igual que el enviado y la contraseña sea igual que la contraseña que se ha enviado hasheada. Si no se ha podido realizar el select, saldrá un error, y si se ha podido, si el nombre de usuario y la contraseña dan resultados en la base de datos se iniciará sesión y se mostrará un mensaje de bienvenidad, y si no se ha podido se mostrará un error de que el nombre de usuario y la contraseña no coinciden con el contenido de la abse de datos.
+<img src="https://user-images.githubusercontent.com/76048388/206213298-78fa6e93-7cd8-49fe-8e04-51c3f3f7c47f.png">
+
+Al igual que con la página de registro, primero incluiremos <b>connect.php</b> y <b>header.php</b>. Si se detecta que ya hay una sesión iniciada, se imprimirá un mensaje diciendo que ya se ha iniciado sesión y que puedes cerrar sesión si quieres (con un enlace al archivo de cierre de sesión). Si la sesión no está iniciada y no hay ya datos enviados mediante post, saldrá un formulario que pedirá el usuario y la contraseña. Si el campo de nombre de usuario está vacío, se añadirá un texto de error al array $errors como anteriormente, y lo mismo ocurrirá si no hay nada en la contraseña. Si ocurre cualquiera de estas situaciones, al enviar el formulario saldrá una lista con los errores. Si no ocurre ninguno de estos errores, se procederá a seleccionar el código de usuario, el nombre y el nivel, donde el nombre de usuario sea igual que el enviado y la contraseña sea igual que la contraseña que se ha enviado hasheada. Si no se ha podido realizar el select, saldrá un error, y si se ha podido, si el nombre de usuario y la contraseña dan resultados en la base de datos se iniciará sesión y se mostrará un mensaje de bienvenidad, y si no se ha podido se mostrará un error de que el nombre de usuario y la contraseña no coinciden con el contenido de la base de datos.
+<h2>Error</h2>
+<img src="https://user-images.githubusercontent.com/76048388/206213625-0e0bdf39-7396-4000-82d1-8e7b31d77a13.png">
+<h2>Inicio de sesión con éxito</h2>
+<img src="https://user-images.githubusercontent.com/76048388/206213753-e6bca350-a963-4e71-8f16-64cb6e826c3d.png">
+<br/>
+El código fuente lo podemos ver en este archivo del repositorio:
+<a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/login.php">login.php</a>
+
+<h3>Cierre de sesión</h3>
+Una vez iniciada la sesión, en el menú de navegación aparecerá nuestro nombre de usuario y al lado un enlace para cerrar sesión que irá al archivo <b>cierresesion.php</b>. Este archivo simplemente borrará la sesión y hará una redirección a la página de inicio de sesión.
+<br/>
+El código fuente lo podemos ver en este archivo del repositorio:
+<a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/cierresesion.php">cierresesion.php</a>
+
+<h3>Crear una categoría</h3>
+Como se explicó antes, el foro tiene tres niveles de contenidos. En primer lugar, están las categorías, donde se englobarán cada uno de los temas, y dentro de los temas habrá posts, que son respuestas a estos temas. Para crear categorías necesitaremos ser administradores, es decir, tener un 1 en la columna nivel_usu de nuestro usuario en la base de datos. Los usuarios estándar no podrán crear categorías, solamente temas y respuestas a esos temas.
+Para empezar, la página comprobará que la sesión está iniciada. Si no está iniciada, nos dará un mensaje con un enlace a la página de inicio de sesión.
+<img src="https://user-images.githubusercontent.com/76048388/206216764-78036d49-f982-4284-a0f7-4ea1750294a0.png">
+
+Una vez iniciada, como dije antes, necesitaremos ser administradores. Para comprobarlo, la página cogerá el valor nivel_usu de la sesión, que declaramos al hacer el inicio de sesión junto al nombre de usuario y el código del usuario. Si este valor es 1, es decir, administrador, se imprimirá un formulario donde podrán rellenarse el nombre de la categoría y su descripción.
+<img src="https://user-images.githubusercontent.com/76048388/206218200-d5da5f31-2785-4bb4-90e6-4087e17f7282.png">
+
+De lo contrario, al ser un usuario estándar saldrá un mensaje de que no es posible crear categorías sin ser administrador.
+<img src="https://user-images.githubusercontent.com/76048388/206218394-bf21f6eb-2d81-44f6-a32c-51f3543aef76.png">
+
+Al enviar la categoría con éxito, saldrá un mensaje de éxito al crear la categoría, si no si se produjese un error en la base de datos saldría el código de error.
+<img src="https://user-images.githubusercontent.com/76048388/206219285-2020c02d-8cd6-4fb6-81e6-09db1a390426.png">
+
+<h3>Crear un tema</h3>
+Teniendo ya categorías, podremos ir a crear un tema, tanto siendo usuario administrador como siendo usuario estándar.
+Primero comprobará que hemos iniciado sesión, si no lo hemos hecho saldrá un error indicando que debemos ir a la página de inicio de sesión.
+<img src="https://user-images.githubusercontent.com/76048388/206216966-cd67671b-5635-454a-b5ec-6f4e6be37219.png">
+<img src="https://user-images.githubusercontent.com/76048388/206218866-c023ee34-c4ee-44d3-aa57-cf15f131d6a9.png">
+
+<h3>Inicio</h3>
+<img src="https://user-images.githubusercontent.com/76048388/206216725-bc7d2fb8-cb20-493c-90ab-7d324773a5c6.png">
+<img src="https://user-images.githubusercontent.com/76048388/206218798-bff652ee-a884-4331-bd84-c4afa7705f1a.png">
+
 
 # Bibliografía
 <ul>
 <li>https://www.apachefriends.org/es/index.html</li>
 <li>https://openwebinars.net/blog/por-que-usar-terraform/</li>
 <li>https://code.tutsplus.com/es/tutorials/how-to-create-a-phpmysql-powered-forum-from-scratch--net-10188</li>
-<li>https://www.applesfera.com/tutoriales/he-estado-probando-passkeys-ios-16-como-funciona-que-experiencia-simplemente-maravillosa</li>
 </ul>
 
 # Autoría
