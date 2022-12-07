@@ -120,7 +120,31 @@ Crearemos también un archivo <b>footer.php</b> que en este caso contendrá mi n
 El código fuente lo podemos ver en este archivo del repositorio:
 <a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/footer.php">footer.php</a>
 
-Como podemos ver en el código, el <b>header.php</b> parece incompleto, ya que no tiene una etiqueta </body> que finalice el código, y tiene un <div> abierto que tampoco está finalizado. Este código se finaliza en el <b>footer.php</b>, ya que al dedicarnos a incluirlos en cada archivo, estos actuarán como si el código estuviese escrito en cada archivo.
+Como podemos ver en el código, el <b>header.php</b> parece incompleto, ya que no tiene una etiqueta &lt;/body&gt; que finalice el código, y tiene un &lt;div&gt; abierto que tampoco está finalizado. Este código se finaliza en el <b>footer.php</b>, ya que al dedicarnos a incluirlos en cada archivo, estos actuarán como si el código estuviese escrito en cada archivo.
+
+<h3>Conexión con la base de datos</h3>
+Para conectar con la base de datos y poder realizar cualquier acción dentro de ella, necesitaremos unas líneas de código dedicadas a ello. Para no escribirlas en cada archivo, crearemos un archivo con ellas que será el que después incluyamos en cada archivo. Este archivo contendrá una variable llamada $conn (aunque la podremos llamar como queramos) que dentro contendrá la función mysqli_connect, donde dentro irán en orden la ubicación de la base de datos (en nuestro caso localhost o 127.0.0.1), el usuario con el que queramos acceder a la base de datos, su contraseña y el nombre de la base de datos a la queramos acceder.
+Después crearemos una condición if que declara que si no se puede lograr la conexión por un error en la base de datos, el archivo mostrará un texto de error y el código de error.
+El código fuente lo podemos ver en este archivo del repositorio:
+<a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/connect.php">connect.php</a>
+
+<h3>Página de registro</h3>
+Este foro será privado, por lo que para ver o crear contenido será necesario registrarse mediante la página de registro, que contendrá un formulario. El formulario tendrá cuatro campos, que serán el nombre de usuario, la contraseña, una repetición de la contraseña y el email del usuario.
+El código funcionará de manera que, primero, tendrá incluidos los archivos <b>connect.php</b> y <b>header.php</b>, el primero para mostrar la base de datos y el segundo para mostrar el menú de navegación. Si no hay ya ningunos datos guardados con el método post, mostrará el formulario, que el usuario rellenará para poder iniciar sesión. Si ya hay datos, comprobará que estos estén bien rellenados:
+<ul>
+  <li>Si el usuario contiene algún símbolo, mostrará una alerta en JavaScript de que no puede añadirlo ya que el nombre de usuario solo puede contener letras o números, y añadirá el mismo texto de error al array $errors.</li>
+  <li>Si el nombre de usuario contiene más de 30 caracteres, mostrará otra alerta y añadirá ese error al array.</li>
+  <li>Otro error se mostrará si no hay nada en el campo nombre de usuario.</li>
+  <li>Otro ocurrirá si el campo de contraseña y el de repetir contraseña no coinciden.</li>
+  <li>El último error se dará si cualquiera de los campos de contraseña están vacíos.</li>
+  <li>El correo electrónico es opcional, por lo que no se mostrará ningún error.</li>
+</ul>
+Si todos los datos son correctos y el usuario no está duplicado, se procederá a insertar mediante mySQL los datos en la base de datos. Por defecto, al usuario se le asignará el nivel de usuario 0, que significa que este usuario no es administrador. Si se quisiera cambiar, lo haría una persona con acceso a la base de datos (el administrador) modificando el campo <b>nivel_usu</b> de 0 a 1. La contraseña se hasheará cuando se incluya en la base de datos mediante la función sha1, que le hace un encriptado sha1 para que ni siquiera una persona con acceso a la base de datos pueda saber la contraseña de cada usuario. Además, se utilizará la función <b>mysqli_real_escape_string</b> al introducir texto plano para dificultar los ataques por inyección SQL.
+Si la inserción no se ha podido realizar con éxito, mostrará una alerta, y si se ha podido mostrará un mensaje de éxito y un enlace al inicio de sesión.
+El código fuente lo podemos ver en este archivo del repositorio:
+<a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/registro.php">registro.php</a>
+
+<h3>Inicio de sesión</h3>
 
 # Bibliografía
 <ul>
