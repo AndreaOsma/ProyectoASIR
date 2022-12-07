@@ -207,8 +207,44 @@ El código fuente lo podemos ver en este archivo del repositorio:
 <a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/crear_tema.php">crear_tema.php</a>
 
 <h3>Inicio</h3>
+Una vez ya haya temas, querremos verlos. Para eso tenemos el archivo <b>index.php</b>, que es la página de inicio del foro. Como el foro es privado, si no tenemos iniciada la sesión, saldrá que primero tenemos que iniciar sesión.
 <img src="https://user-images.githubusercontent.com/76048388/206216725-bc7d2fb8-cb20-493c-90ab-7d324773a5c6.png">
+Una vez iniciada la sesión, si todavía no hay contenido saldrá este mensaje:
 <img src="https://user-images.githubusercontent.com/76048388/206218798-bff652ee-a884-4331-bd84-c4afa7705f1a.png">
+En cambio, si hay contenido saldrá listado, pero solamente saldrán las categorías que tengan un tema dentro. Como se puede ver, aparecerá una tabla donde a la izquierda saldrá el nombre de cada una de las categorías y a la derecha el último tema creado. Esto se ha hecho mediante un select con left join igual al de la página <b>crear_tema.php</b>.
+<img src="https://user-images.githubusercontent.com/76048388/206226750-8881709f-4d41-4275-aa39-6c57caecccfd.png">
+<br/>
+El código fuente lo podemos ver en este archivo del repositorio:
+<a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/index.php">index.php</a>
+
+<h3>Vista de categoría</h3>
+Ahora queremos que al pinchar en el nombre de una categoría nos muestre todos los temas que hay dentro. Para ello vamos a crear un archivo <b>categoria.php</b>, pero no accederemos directamente a este archivo sino a la categoría en cuestión, que habremos mandado antes mediante el protocolo GET en el <b>index.php</b> al pulsar el enlace, por lo que en el enlace saldrá el código de la categoría.
+<img src="https://user-images.githubusercontent.com/76048388/206233108-4d99cd86-dd10-4725-ab68-caf29669e049.png">
+Si intentásemos acceder directamente poniendo el código de una categoría cualquiera, nos saldría que la categoría no existe.
+<img src="https://user-images.githubusercontent.com/76048388/206233561-ab927253-5b7d-4e93-9bad-dd5db21aefee.png">
+Al acceder a una categoría que sí que exista, saldrá una tabla con todos los temas que hay dentro y su fecha de creación.
+<img src="https://user-images.githubusercontent.com/76048388/206233730-9c8e1b39-50c0-4d58-80c0-17dcda3b0f55.png">
+<br/>
+El código fuente lo podemos ver en este archivo del repositorio:
+<a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/categoria.php">categoria.php</a>
+
+<h3>Vista de tema</h3>
+A los temas accederemos de una forma similar a las categorías mediante el enlace el protocolo GET. Dentro de cada tema saldrá desplegado tanto el tema como todas sus respuestas o posts, estando a un lado de la tabla el contenido de ese post y al otro el usuario y la fecha de publicación. Habrá un formulario para enviar respuestas nuevas.
+<img src="https://user-images.githubusercontent.com/76048388/206234130-adc86dfe-b600-4c52-9e7c-553731709a60.png">
+<br/>
+El código fuente lo podemos ver en este archivo del repositorio:
+<a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/tema.php">tema.php</a>
+
+<h3>Responder a temas</h3>
+Para procesar lo que se introduzca en el formulario mencionado anteriormente para responder, necesitaremos el fichero <b>respuesta.php</b>. No se podrá acceder a este archivo directamente, es decir, cuando no haya ningún dato guardado mediante el protocolo POST. Si lo intentamos saldrá un mensaje.
+<img src="https://user-images.githubusercontent.com/76048388/206234860-5bf50ab3-0fd4-44e0-acf3-2652d6028567.png">
+Si hay datos, estos se procesarán y se guardarán en la base de datos en la tabla de posts, y al realizarlo con éxito saldrá un mensaje de éxito con un enlace a la página del tema.
+<img src="https://user-images.githubusercontent.com/76048388/206235257-97b7b7e4-220c-433b-9ae9-cb6fa7986166.png">
+Finalmente, al acceder a la vista del tema veremos que la respuesta se ha guardado correctamente.
+<img src="https://user-images.githubusercontent.com/76048388/206235458-8e412d8a-b4c4-4111-8f39-8b96795b7352.png">
+<br/>
+El código fuente lo podemos ver en este archivo del repositorio:
+<a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/respuesta.php">respuesta.php</a>
 
 
 # Bibliografía
