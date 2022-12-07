@@ -181,12 +181,30 @@ De lo contrario, al ser un usuario estándar saldrá un mensaje de que no es pos
 
 Al enviar la categoría con éxito, saldrá un mensaje de éxito al crear la categoría, si no si se produjese un error en la base de datos saldría el código de error.
 <img src="https://user-images.githubusercontent.com/76048388/206219285-2020c02d-8cd6-4fb6-81e6-09db1a390426.png">
+<br/>
+El código fuente lo podemos ver en este archivo del repositorio:
+<a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/crear_cat.php">crear_cat.php</a>
 
 <h3>Crear un tema</h3>
 Teniendo ya categorías, podremos ir a crear un tema, tanto siendo usuario administrador como siendo usuario estándar.
 Primero comprobará que hemos iniciado sesión, si no lo hemos hecho saldrá un error indicando que debemos ir a la página de inicio de sesión.
 <img src="https://user-images.githubusercontent.com/76048388/206216966-cd67671b-5635-454a-b5ec-6f4e6be37219.png">
+Si tenemos la sesión iniciada, seleccionaremos todas las categorías que haya en la base de datos. Si diese un error en la conexión saldría un mensaje de error y su código de error, y si no hay un error pero no hubiese ninguna categoría habría dos casos.
+El primer caso sería que le saliese a un usuario administrador, por lo que le saldría que todavía no ha creado ninguna categoría.
 <img src="https://user-images.githubusercontent.com/76048388/206218866-c023ee34-c4ee-44d3-aa57-cf15f131d6a9.png">
+El segundo caso sería el de un usuario estándar, al que le saldría que tiene que esperar a que un administrador crease una categoría.
+<img src="https://user-images.githubusercontent.com/76048388/206221231-b7d30218-8538-4e98-8aab-254ef7e0e984.png">
+
+Habiendo categorías, saldrá un formulario para crear un tema, donde habrá un campo para la descripción o asunto del tema, otro para el texto del tema, y uno tipo select que contendrá un bucle while que diga que despliegue todas las categorías cada una como un option.
+<img src="https://user-images.githubusercontent.com/76048388/206221617-1fea80ad-55d6-4001-8097-8ade5f6f67fd.png">
+
+Cuando ya haya datos enviados, haremos una consulta SQL con un left join, donde vamos a seleccionar las columnas cod_tema, descrip_tema, fecha_tema y cat_tema de la tabla temas y las columnas cod_cat, nombre_cat y descr_cat de la tabla categorías, pero solo donde coincidad la columna categorias.cod_cat con la columna temas.cat_tema, para así recoger todos los temas que tenga la categoría seleccionada.
+Si no ha habido ningún error, se procederá a insertar el contenido del formulario en la tabla de temas, con el código de la categoría elegida en la columna cat_tema y con el código del usuario que hay en la sesión en la columna autor_tema. A la vez, la descripción del tema se insertará también en la tabla posts en la columna texto_post, junto a la fecha de inserción, el código del tema en tema_post y el código de usuario en autor_post.
+Si no hay ningún error, se mostrará un mensaje de éxito.
+<img src="https://user-images.githubusercontent.com/76048388/206224444-f0a9ba44-9aca-446b-bb97-c1cccf6b961b.png">
+<br/>
+El código fuente lo podemos ver en este archivo del repositorio:
+<a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/crear_tema.php">crear_tema.php</a>
 
 <h3>Inicio</h3>
 <img src="https://user-images.githubusercontent.com/76048388/206216725-bc7d2fb8-cb20-493c-90ab-7d324773a5c6.png">
