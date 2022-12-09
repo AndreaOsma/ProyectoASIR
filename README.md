@@ -1,12 +1,17 @@
-# Implantación de foro para una red de empresa en AWS
-<p>Este proyecto se compone de varias partes.</p>
-<ul>
-  <li>Introducción</li>
-  <li>Entorno de pruebas</li>
-  <li>Programación de foro en PHP y mySQL</li>
-  <li>Implantanción en AWS mediante Terraform y Kubernetes</li>
-</ul>
+<a name="top"></a>
+> Andrea Osma Rafael  
+> CFP Juan XXIII - Ciclo 2020/2022
+> CFGS Administración de Sistemas Informáticos en Red 
 
+## Implantación de foro para una red de empresa en AWS
+## Índice
+<p>Este proyecto se compone de varias partes.</p>
+- [Introducción](#introduccion)
+Entorno de pruebas
+Programación de foro en PHP y mySQL
+Implantanción en AWS mediante Terraform y Kubernetes
+
+<a name="introduccion"></a>
 # Introducción
 
 # Entorno de pruebas
