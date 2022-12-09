@@ -6,14 +6,17 @@
 ## Implantación de foro para una red de empresa en AWS
 ## Índice
 <p>Este proyecto se compone de varias partes.</p>
-- [Introducción](#introduccion)
-Entorno de pruebas
-Programación de foro en PHP y mySQL
-Implantanción en AWS mediante Terraform y Kubernetes
+<ul>
+  <li><a href="#introduccion">Introducción</a></li>
+  <li><a href="#entornopruebas">Entorno de pruebas</a></li>
+  <li><a href="#foro">Programación de foro en PHP y mySQL</a></li>
+  <li><a href="#aws">Implantanción en AWS mediante Terraform y Kubernetes</li>
+</ul>
 
 <a name="introduccion"></a>
 # Introducción
 
+<a name="entornopruebas"></a>
 # Entorno de pruebas
 <h3>XAMPP</h3>
 <p>XAMPP es un entorno de desarrollo enfocado a la programación en PHP. La distribución incluye el servidor web Apache, un servidor de bases de datos mySQL, un servidor FTP Filezilla, el servidor de correo Mercury y el contenedor Tomcat para utilizar el lenguaje de programación Java. Puesto que este proyecto estará programado en PHP, JavaScript y mySQL, solo necesitaremos los dos primeros (Apache y mySQL). XAMPP funciona de manera que crea estos servidores en la máquina donde se instalen, pudiendo luego acceder a ellos o bien desde la IP del dispositivo y el puerto del servidor (por ejemplo: http://192.168.1.60:80 para acceder al servidor Apache, es decir, a la web principal) o bien accediendo desde la propia máquina poniendo http://localhost en el navegador. Se suele acceder como localhost, ya que el propósito principal de XAMPP, si bien se pueden desplegar páginas web con él, es ser usado como entorno de pruebas a la hora de programar una página web. Por lo tanto, durante el proyecto usaré XAMPP para probar cada cambio que haga al programar la web.</p>
@@ -37,7 +40,7 @@ Implantanción en AWS mediante Terraform y Kubernetes
 <li>Como extra, todas las configuraciones que se hacen en Terraform pueden ser compartidas y reutilizables, con lo que los diferentes trabajadores que gestionasen Terraform en la empresa tendrían acceso a los mismos archivos y configuraciones.</li>
 </ul>
 
-
+<a name="foro"></a>
 # Foro
 <p>El objetivo de esta sección es realizar una página web, un foro creado en PHP con una base de datos mySQL para que los empleados puedan compartir sus pensamientos, ideas o quejas. Podríamos utilizar otros servicios como Slack o Discord, donde crear un foro con diferentes subforos con esta misma misión, pero haciendo nuestro propio foro nos aseguramos de tener una web propia, sin necesidad de depender de los servidores de terceros.</p>
 <h3>Relación de tablas</h3>
@@ -254,6 +257,7 @@ Finalmente, al acceder a la vista del tema veremos que la respuesta se ha guarda
 El código fuente lo podemos ver en este archivo del repositorio:
 <a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/respuesta.php">respuesta.php</a>
 
+<a name="aws"></a>
 # Configurando Terraform
 Para esta sección utilizaré Ubuntu 22.04 en modo Terminal.
 En primer lugar utilizaremos estos comandos para guardar el repositorio en el que está Terraform y actualizar la lista de repositorios.
