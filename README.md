@@ -3,24 +3,51 @@
 > CFP Juan XXIII - Ciclo 2020/2022
 > CFGS Administración de Sistemas Informáticos en Red 
 
-## Implantación de foro para una red de empresa en AWS
-## Índice
+# Implantación de foro en AWS mediante Terraform
+# Índice
 <p>Este proyecto se compone de varias partes.</p>
 <ul>
   <li><a href="#introduccion">Introducción</a></li>
-  <li><a href="#entornopruebas">Entorno de pruebas</a></li>
-  <li><a href="#foro">Programación de foro en PHP y mySQL</a></li>
+  <li><a href="#programas">Programas e infraestructura utilizados</a></li>
+    <ul>
+      <li>XAMPP</li>
+      <li>Visual Studio Code</li>
+      <li>Terraform</li>
+      <li>Amazon Web Services</li>
+    </ul>
+  <li><a href="#foro">Foro</a></li>
+     <ul>
+       <li>Base de datos</li>
+       <li>Código</li>
+     </ul>
   <li><a href="#aws">Implantanción en AWS mediante Terraform y Kubernetes</li>
+  <li>Glosario</li>
+  <li>Bibliografía</li>
 </ul>
 
 <a name="introduccion"></a>
 # Introducción
+En este proyecto he querido mostrar los beneficios que el almacenamiento en la nube puede tener, tanto para una persona individual como para una empresa, como espacio para desplegar nuestros proyectos. Lo he querido mostrar mediante un foro que yo misma he programado mediante PHP y mySQL, debido a mi interés específico en la programación de páginas web. También he querido utilizar Terraform debido a los beneficios que veremos posteriormente.
 
-<a name="entornopruebas"></a>
-# Entorno de pruebas
+El proyecto consistirá en un foro en el que los miembros podrán compartir sus pensamientos con el resto de los usuarios, por lo tanto podrán:
+<ul>
+  <li>Crear su propia cuenta.</li>
+  <li>Iniciar o cerrar sesión.</li>
+  <li>Ver el contenido, pudiendo desplegar cada una de las categorías y temas para ver el contenido ya publicado.</li>
+  <li>Crear sus propias categorías (solamente si son administradores).</li>
+  <li>Crear sus propios temas.</li>
+  <li>Responder a los temas que ya haya publicados.</li>
+</ul>
+
+A continuación, usaré AWS (Amazon Web Services) para desplegar esa página web, y que cualquier persona con su IP o DNS pueda acceder sin problemas. Para esto, utilizaré Terraform, para tener la posibilidad de reducir los costes y que  si en un futuro queramos cambiar a otro proveedor de infraestructura (como Microsoft Azure o Google Cloud) podamos hacerlo sin ninguna complicación.
+
+<a name="programas"></a>
+# Programas e infraestructura utilizados
 <h3>XAMPP</h3>
-<p>XAMPP es un entorno de desarrollo enfocado a la programación en PHP. La distribución incluye el servidor web Apache, un servidor de bases de datos mySQL, un servidor FTP Filezilla, el servidor de correo Mercury y el contenedor Tomcat para utilizar el lenguaje de programación Java. Puesto que este proyecto estará programado en PHP, JavaScript y mySQL, solo necesitaremos los dos primeros (Apache y mySQL). XAMPP funciona de manera que crea estos servidores en la máquina donde se instalen, pudiendo luego acceder a ellos o bien desde la IP del dispositivo y el puerto del servidor (por ejemplo: http://192.168.1.60:80 para acceder al servidor Apache, es decir, a la web principal) o bien accediendo desde la propia máquina poniendo http://localhost en el navegador. Se suele acceder como localhost, ya que el propósito principal de XAMPP, si bien se pueden desplegar páginas web con él, es ser usado como entorno de pruebas a la hora de programar una página web. Por lo tanto, durante el proyecto usaré XAMPP para probar cada cambio que haga al programar la web.</p>
-<p>Para que estos servidores funcionen, simplemente una vez instalado XAMPP, que se puede descargar desde <a href="https://www.apachefriends.org/es/index.html">aquí</a>, entraremos a su panel de control como administrador.</p>
+XAMPP es un entorno de desarrollo web. La distribución incluye el servidor web Apache, un servidor de bases de datos mySQL, un servidor FTP Filezilla, el servidor de correo Mercury y el contenedor Tomcat para utilizar el lenguaje de programación Java. Puesto que este proyecto estará programado en PHP, JavaScript y mySQL, solo necesitaremos los dos primeros (Apache y mySQL). XAMPP funciona de manera que crea estos servidores en la máquina donde se instalen, pudiendo luego acceder a ellos o bien desde la IP del dispositivo y el puerto del servidor (por ejemplo: http://192.168.1.60:80 para acceder al servidor Apache, es decir, a la web principal) o bien accediendo desde la propia máquina poniendo http://localhost en el navegador.
+Este programa solamente lo usaré como entorno de pruebas mientras programo el foro, ya que después en AWS instalaré tanto Apache como mySQL, pero no el resto de servidores.
+
+Para que estos servidores funcionen, simplemente una vez instalado XAMPP, que se puede descargar desde <a href="https://www.apachefriends.org/es/index.html">aquí</a>, entraremos a su panel de control como administrador.
 <img src="https://user-images.githubusercontent.com/76048388/199494030-504ff5a0-0205-41ee-b8f0-bfc5e50b988e.png">
 <p>Posteriormente, le daremos a "Start" a los servicios que queramos utilizar. Como se puede ver en la imagen que hay a continuación, aparecerán el PID (código de proceso) del servicio activado y el puerto o puertos que tiene asignados dicho servicio. Los que no utilizamos simplemente se quedarán desactivados, para no consumir recursos de manera innecesaria.</p>
 
@@ -32,24 +59,35 @@
 
 <br/>
 
+<h3>Visual Studio Code</h3>
+Visual Studio Code es un editor de código fuente desarrollado por Microsoft, que tiene aplicaciones para Windows, Linux, macOS y web. Tiene control integrado de Git y permite la instalación de extensiones para depurar el código de cualquier lenguaje y encontrar errores. He decidido utilizar este programa ya que, primero, ayuda con la depuración de errores y la sintaxis, y segundo, permite iniciar sesión con la cuenta de Microsoft o la de Github para poder tener una copia de seguridad del código o en el caso de Github poder clonar repositorios con facilidad.
+<br/>
+
 <h3>Terraform</h3>
 <p>Una vez programada la página web habiendo utilizado XAMPP como entorno de pruebas, utilizaré <a href="https://www.terraform.io">Terraform</a> para el despliegue en AWS. Terraform permite definir la infraestructura como código, esto quiere decir que es posible escribir en un fichero de texto la definición de la infraestructura usando un lenguaje de programación declarativo y simple. Esto tiene varios beneficios:
 <ul>
-<li>En primer lugar, que toda la infraestructura utilizada se puede administrar desde una sola aplicación, lo cual a una empresa, donde a la larga existen un volumen de servicios elevados, le permite desplegar estos servicios y sus dependencias, y cuando se quiera dejar de usar el proveedor que se esté utilizando (como por ejemplo AWS), cerrar estos servicios y dependencias para poder llevarlos a otro proveedor. Si no se utilizase Terraform, podría quedar algún servicio abierto por error, suponiendo esto un coste extra a la empresa o usuario, ya que todos los servicios que se utilicen en la nube tienen un coste que cobran a final de mes. Con Terraform, todo quedaría cerrado evitando estas situaciones</li>
-<li>En segundo lugar, relacionado con lo dicho en el punto anterior, que Terraform no se limita a un solo proveedor, por lo que por ejemplo una empresa que utilizase AWS, podría migrar toda la infraestructura a otros proveedores como Azure de una forma sencilla y evitando los posibles errores que comenté en el punto anterior.</li>
+<li>En primer lugar, que toda la infraestructura utilizada se puede administrar desde una sola aplicación, lo cual a una empresa, donde a la larga existen un volumen de servicios elevados, le permite desplegar estos servicios y sus dependencias, y cuando se quiera dejar de usar el proveedor que se esté utilizando (como por ejemplo AWS), cerrar estos servicios y dependencias para poder llevarlos a otro proveedor. Si no se utilizase Terraform, podría quedar algún servicio abierto por error, suponiendo esto un coste extra a la empresa o usuario, ya que todos los servicios que se utilicen en la nube tienen un coste que cobran a final de mes. Con Terraform, todo quedaría cerrado evitando estas situaciones.</li>
+<li>En segundo lugar, relacionado con lo dicho en el punto anterior, Terraform no se limita a un solo proveedor, por lo que por ejemplo una empresa que utilizase AWS, podría migrar toda la infraestructura a otros proveedores como Azure de una forma sencilla y evitando los posibles errores que comenté en el punto anterior.</li>
 <li>Como extra, todas las configuraciones que se hacen en Terraform pueden ser compartidas y reutilizables, con lo que los diferentes trabajadores que gestionasen Terraform en la empresa tendrían acceso a los mismos archivos y configuraciones.</li>
 </ul>
 
+<br/>
+
+<h3>Amazon Web Services</h3>
+Amazon Web Services, abreviado como AWS, es una colección de servicios web que en conjunto forman una plataforma de computación en la nube. La mayoría de estos servicios no están expuestos directamente a los usuarios finales, sino que ofrecen una funcionalidad que otros desarrolladores puedan utilizar en sus aplicaciones. Se accede a través de HTTP, pudiendo realizar todas las gestiones a través de una consola web, pero una vez ya realizado el registro también se puede acceder mediante línea de comandos instalando el paquete que lo permite.
+AWS está situado en 18 regiones geográficas, y solamente en Europa hay servidores en cuatro diferentes ciudades, cada una con tres zonas diferentes de disponibilidad. Las zonas de seguridad son los centros de datos que proporcionan sus servicios, y están aisladas unas de otras para evitar la propagación de cortes entre las zonas. Esto nos da la seguridad de que es prácticamente imposible que nuestros servicios dejen de estar disponibles en algún periodo de tiempo, ya que sería muy complicado que todas las zonas de disponibilidad cayesen a la vez, y si cayese solamente una no importaría ya que nuestros datos tienen una réplica en otra.
+Hay otros servicios como Azure, de Microsoft, o Gcloud, de Google, siendo estos son competidores más directos, pero yo he elegido AWS debido a que es donde tengo cierta experiencia.
+
 <a name="foro"></a>
 # Foro
-<p>El objetivo de esta sección es realizar una página web, un foro creado en PHP con una base de datos mySQL para que los empleados puedan compartir sus pensamientos, ideas o quejas. Podríamos utilizar otros servicios como Slack o Discord, donde crear un foro con diferentes subforos con esta misma misión, pero haciendo nuestro propio foro nos aseguramos de tener una web propia, sin necesidad de depender de los servidores de terceros.</p>
+<h2>Base de datos</h2>
+<p>El objetivo de esta sección es realizar una página web, un foro creado en PHP con una base de datos mySQL para que los usuarios puedan compartir sus pensamientos, ideas o quejas. Está enfocado a una red de empresa, por lo que alguien que no sea usuario no podría ver el contenido, pero se podría adaptar a ser un foro normal quitando solamente un par de líneas de código. Podríamos utilizar otros servicios como Slack o Discord, donde crear un foro con diferentes subforos con esta misma misión, pero haciendo nuestro propio foro nos aseguramos de tener una web propia, sin necesidad de depender de los servidores de terceros.</p>
 <h3>Relación de tablas</h3>
 Para crear el modelo de datos he utilizado Case Studio. Los datos se gestionarán así:
 
 <img src="https://user-images.githubusercontent.com/76048388/199696419-f960024c-487e-4eb6-9308-a8779877d8d3.png">
 
-
-<h3>Creación de la tabla de usuarios.</h3>
+<h3>Tabla de usuarios</h3>
 <p>En primer lugar, es necesario crear una tabla dentro de la base de datos que recoja los usuarios que habrá en el foro. La primera columna será cod_usuario, que será el id del usuario, de tipo integer, que no podrá estar vacía y que se irá incrementando cada vez que se meta una nueva fila. Llevará también las columnas nombre_usu (para el nombre de usuario), pass_usu (para la contraseña), email_usu (para el correo electrónico), fecha_registro (que contendrá la fecha en la que se hizo el registro), y nivel_usu, ya que el usuario podrá ser administrador o estándar, por lo que si tiene un 1 será administrador y si tiene un 0 será estándar. La primary key será cod_usuario y nombre_usu debe ser único.</p>
 
 <pre>CREATE TABLE usuarios (
@@ -63,7 +101,7 @@ UNIQUE INDEX nombre_usuario_unico (nombre_usu),
 PRIMARY KEY (cod_usuario)
 );</pre>
 
-<h3>Creación de la tabla de categorías.</h3>
+<h3>Tabla de categorías</h3>
 <p>La segunda tabla será la de categorías, que será donde vayan englobados todos los temas. La primera columna es cod_cat, estructurada de la misma manera que en la tabla de usuarios, la segunda nombre_cat, donde irá el nombre de la categoría, y la tercera descr_cat, donde irá la descripción de la categoría. La columna nombre_cat será única y la primary key será cod_cat.</p>
 
 <pre>CREATE TABLE categorias (
@@ -75,7 +113,7 @@ PRIMARY KEY (cod_cat)
 );</pre>
 
 
-<h3>Creación de la tabla de temas.</h3>
+<h3>Tabla de temas</h3>
 <p>La tercera tabla será la de temas. La primera columna es cod_tema, estructurada de la misma manera que en el resto de las tablas, la segunda descrip_tema, donde irá la descripción o asunto del tema, la tercera fecha_tema, que indicará la fecha en la que fue insertado el tema, la cuarta cat_tema, que será una foreign key donde aparezca el código de la categoría a la que pertenece el tema, y la quinta será autor_tema, donde irá una foreign key hacia el código del usuario que ha creado el tema. La primary key será cod_tema.</p>
 
 <pre>CREATE TABLE temas (
@@ -87,7 +125,7 @@ autor_tema        INT(8) NOT NULL,
 PRIMARY KEY (cod_tema)
 );</pre>
 
-<h3>Creación de la tabla de posts.</h3>
+<h3>Tabla de posts</h3>
 <p>La cuarta tabla será la de posts, es decir, la de las respuestas a los temas. La primera columna es cod_post, estructurada de la misma manera que en el resto de las tablas, la segunda texto_post, donde irá el texto que el usuario meta en él, la tercera fecha_post, que indicará la fecha en la que fue insertado el post, la cuarta tema_post, que será una foreign key donde aparezca el código del tema al que responde el post, y la quinta será autor_post, donde irá una foreign key hacia el código del usuario que ha creado el post. La primary key será cod_post.</p>
 
 <pre>CREATE TABLE posts (
@@ -109,17 +147,17 @@ ALTER TABLE temas ADD FOREIGN KEY(autor_tema) REFERENCES usuarios(cod_usuario) O
 ALTER TABLE posts ADD FOREIGN KEY(tema_post) REFERENCES temas(cod_tema) ON DELETE RESTRICT ON UPDATE CASCADE;
 </pre>
 
-# Código del foro
+# Código PHP
 <h3>Cabecera y pie de página</h3>
 En primer lugar, crearemos un archivo <b>header.php</b>. Este archivo contendrá el menú, y estará incluido al principio del código PHP de cada archivo con la línea: <pre>include "header.php";</pre>
 <img src="https://user-images.githubusercontent.com/76048388/206175615-25872325-57e4-4b85-a42d-8cddb0150a04.png">
 El código fuente lo podemos ver en este archivo del repositorio:
-<a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/header.php">header.php</a>
+<a href="https://github.com/AndreaOsma/ProyectoASIR/blob/main/proyecto/foro/header.php">header.php</a>
 <br/>
 
 Crearemos también un archivo <b>footer.php</b> que en este caso contendrá mi nombre, pero podría contener cualquier otra información como el copyright o enlaces de interés, e irá incluido al final del código PHP de cada archivo con la línea: <pre>include footer.php;</pre>
 El código fuente lo podemos ver en este archivo del repositorio:
-<a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/footer.php">footer.php</a>
+<a href="https://github.com/AndreaOsma/ProyectoASIR/blob/main/proyecto/foro/footer.php">footer.php</a>
 
 Como podemos ver en el código, el <b>header.php</b> parece incompleto, ya que no tiene una etiqueta &lt;/body&gt; que finalice el código, y tiene un &lt;div&gt; abierto que tampoco está finalizado. Este código se finaliza en el <b>footer.php</b>, ya que al dedicarnos a incluirlos en cada archivo, estos actuarán como si el código estuviese escrito en cada archivo.
 
@@ -127,7 +165,7 @@ Como podemos ver en el código, el <b>header.php</b> parece incompleto, ya que n
 Para conectar con la base de datos y poder realizar cualquier acción dentro de ella, necesitaremos unas líneas de código dedicadas a ello. Para no escribirlas en cada archivo, crearemos un archivo con ellas que será el que después incluyamos en cada archivo. Este archivo contendrá una variable llamada $conn (aunque la podremos llamar como queramos) que dentro contendrá la función mysqli_connect, donde dentro irán en orden la ubicación de la base de datos (en nuestro caso localhost o 127.0.0.1), el usuario con el que queramos acceder a la base de datos, su contraseña y el nombre de la base de datos a la queramos acceder.
 Después crearemos una condición if que declara que si no se puede lograr la conexión por un error en la base de datos, el archivo mostrará un texto de error y el código de error.
 El código fuente lo podemos ver en este archivo del repositorio:
-<a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/connect.php">connect.php</a>
+<a href="https://github.com/AndreaOsma/ProyectoASIR/blob/main/proyecto/foro/connect.php">connect.php</a>
 
 <h3>Página de registro</h3>
 Este foro será privado, por lo que para ver o crear contenido será necesario registrarse mediante la página de registro, que contendrá un formulario. El formulario tendrá cuatro campos, que serán el nombre de usuario, la contraseña, una repetición de la contraseña y el email del usuario.
@@ -158,7 +196,7 @@ Si todos los datos son correctos y el usuario no está duplicado, se procederá 
 Si la inserción no se ha podido realizar con éxito, mostrará una alerta, y si se ha podido mostrará un mensaje de éxito y un enlace al inicio de sesión.
 <br/>
 El código fuente lo podemos ver en este archivo del repositorio:
-<a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/registro.php">registro.php</a>
+<a href="https://github.com/AndreaOsma/ProyectoASIR/blob/main/proyecto/foro/registro.php">registro.php</a>
 
 <h3>Inicio de sesión</h3>
 Una vez creado un usuario, querremos iniciar sesión para ver el contenido del foro. Para esto tenemos un archivo <b>login.php</b> que realiza una selección de la base de datos.
@@ -171,13 +209,13 @@ Al igual que con la página de registro, primero incluiremos <b>connect.php</b> 
 <img src="https://user-images.githubusercontent.com/76048388/206213753-e6bca350-a963-4e71-8f16-64cb6e826c3d.png">
 <br/>
 El código fuente lo podemos ver en este archivo del repositorio:
-<a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/login.php">login.php</a>
+<a href="https://github.com/AndreaOsma/ProyectoASIR/blob/main/proyecto/foro/login.php">login.php</a>
 
 <h3>Cierre de sesión</h3>
 Una vez iniciada la sesión, en el menú de navegación aparecerá nuestro nombre de usuario y al lado un enlace para cerrar sesión que irá al archivo <b>cierresesion.php</b>. Este archivo simplemente borrará la sesión y hará una redirección a la página de inicio de sesión.
 <br/>
 El código fuente lo podemos ver en este archivo del repositorio:
-<a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/cierresesion.php">cierresesion.php</a>
+<a href="https://github.com/AndreaOsma/ProyectoASIR/blob/main/proyecto/foro/cierresesion.php">cierresesion.php</a>
 
 <h3>Crear una categoría</h3>
 Como se explicó antes, el foro tiene tres niveles de contenidos. En primer lugar, están las categorías, donde se englobarán cada uno de los temas, y dentro de los temas habrá posts, que son respuestas a estos temas. Para crear categorías necesitaremos ser administradores, es decir, tener un 1 en la columna nivel_usu de nuestro usuario en la base de datos. Los usuarios estándar no podrán crear categorías, solamente temas y respuestas a esos temas.
@@ -194,7 +232,7 @@ Al enviar la categoría con éxito, saldrá un mensaje de éxito al crear la cat
 <img src="https://user-images.githubusercontent.com/76048388/206219285-2020c02d-8cd6-4fb6-81e6-09db1a390426.png">
 <br/>
 El código fuente lo podemos ver en este archivo del repositorio:
-<a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/crear_cat.php">crear_cat.php</a>
+<a href="https://github.com/AndreaOsma/ProyectoASIR/blob/main/proyecto/foro/crear_cat.php">crear_cat.php</a>
 
 <h3>Crear un tema</h3>
 Teniendo ya categorías, podremos ir a crear un tema, tanto siendo usuario administrador como siendo usuario estándar.
@@ -215,7 +253,7 @@ Si no hay ningún error, se mostrará un mensaje de éxito.
 <img src="https://user-images.githubusercontent.com/76048388/206224444-f0a9ba44-9aca-446b-bb97-c1cccf6b961b.png">
 <br/>
 El código fuente lo podemos ver en este archivo del repositorio:
-<a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/crear_tema.php">crear_tema.php</a>
+<a href="https://github.com/AndreaOsma/ProyectoASIR/blob/main/proyecto/foro/crear_tema.php">crear_tema.php</a>
 
 <h3>Inicio</h3>
 Una vez ya haya temas, querremos verlos. Para eso tenemos el archivo <b>index.php</b>, que es la página de inicio del foro. Como el foro es privado, si no tenemos iniciada la sesión, saldrá que primero tenemos que iniciar sesión.
@@ -226,7 +264,7 @@ En cambio, si hay contenido saldrá listado, pero solamente saldrán las categor
 <img src="https://user-images.githubusercontent.com/76048388/206226750-8881709f-4d41-4275-aa39-6c57caecccfd.png">
 <br/>
 El código fuente lo podemos ver en este archivo del repositorio:
-<a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/index.php">index.php</a>
+<a href="https://github.com/AndreaOsma/ProyectoASIR/blob/main/proyecto/foro/index.php">index.php</a>
 
 <h3>Vista de categoría</h3>
 Ahora queremos que al pinchar en el nombre de una categoría nos muestre todos los temas que hay dentro. Para ello vamos a crear un archivo <b>categoria.php</b>, pero no accederemos directamente a este archivo sino a la categoría en cuestión, que habremos mandado antes mediante el protocolo GET en el <b>index.php</b> al pulsar el enlace, por lo que en el enlace saldrá el código de la categoría.
@@ -237,14 +275,14 @@ Al acceder a una categoría que sí que exista, saldrá una tabla con todos los 
 <img src="https://user-images.githubusercontent.com/76048388/206233730-9c8e1b39-50c0-4d58-80c0-17dcda3b0f55.png">
 <br/>
 El código fuente lo podemos ver en este archivo del repositorio:
-<a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/categoria.php">categoria.php</a>
+<a href="https://github.com/AndreaOsma/ProyectoASIR/blob/main/proyecto/foro/categoria.php">categoria.php</a>
 
 <h3>Vista de tema</h3>
 A los temas accederemos de una forma similar a las categorías mediante el enlace el protocolo GET. Dentro de cada tema saldrá desplegado tanto el tema como todas sus respuestas o posts, estando a un lado de la tabla el contenido de ese post y al otro el usuario y la fecha de publicación. Habrá un formulario para enviar respuestas nuevas.
 <img src="https://user-images.githubusercontent.com/76048388/206234130-adc86dfe-b600-4c52-9e7c-553731709a60.png">
 <br/>
 El código fuente lo podemos ver en este archivo del repositorio:
-<a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/tema.php">tema.php</a>
+<a href="https://github.com/AndreaOsma/ProyectoASIR/blob/main/proyecto/foro/tema.php">tema.php</a>
 
 <h3>Responder a temas</h3>
 Para procesar lo que se introduzca en el formulario mencionado anteriormente para responder, necesitaremos el fichero <b>respuesta.php</b>. No se podrá acceder a este archivo directamente, es decir, cuando no haya ningún dato guardado mediante el protocolo POST. Si lo intentamos saldrá un mensaje.
@@ -255,7 +293,7 @@ Finalmente, al acceder a la vista del tema veremos que la respuesta se ha guarda
 <img src="https://user-images.githubusercontent.com/76048388/206235458-8e412d8a-b4c4-4111-8f39-8b96795b7352.png">
 <br/>
 El código fuente lo podemos ver en este archivo del repositorio:
-<a href="https://github.com/Andify28/ProyectoASIR/blob/main/proyecto/foro/respuesta.php">respuesta.php</a>
+<a href="https://github.com/AndreaOsma/ProyectoASIR/blob/main/proyecto/foro/respuesta.php">respuesta.php</a>
 
 <a name="aws"></a>
 # Configurando Terraform
@@ -606,7 +644,8 @@ terraform show | grep public_ip</code></pre>
 Copiaremos ese DNS o IP y para acceder por SSH usaremos el siguiente comando:
 <pre><code>ssh -i RutaClavePrivada ec2-user@ec2-34-*-*-*.eu-west-1.compute.amazonaws.com</code></pre>
 
-
+# Conclusión del proyecto
+Como conclusión, queda claro que mediante PHP y mySQL no es difícil hacer un foro básico, y mediante otras herramientas como AWS o cualquier otro hosting en la nube ya no es necesario hostearlo en una máquina física.
 
 # Bibliografía
 <ul>
@@ -624,3 +663,5 @@ Copiaremos ese DNS o IP y para acceder por SSH usaremos el siguiente comando:
 
 # Licencia
 <p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/Andify28/ProyectoASIR">Red empresarial en AWS - Proyecto de fin de grado de ASIR</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/Andify28">Andrea Osma Rafael</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-SA 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1"></a></p>
+
+<a href="#top">Volver al inicio</a>
