@@ -296,6 +296,10 @@ El código fuente lo podemos ver en este archivo del repositorio:
 <a href="https://github.com/AndreaOsma/ProyectoASIR/blob/main/proyecto/foro/respuesta.php">respuesta.php</a>
 
 <a name="aws"></a>
+# Creando el servidor web y la base de datos en AWS y desplegando el foro
+![image](https://user-images.githubusercontent.com/76048388/207176350-fe972fd5-6759-41d5-847b-11a4acc88e56.png)
+
+
 # Configurando Terraform
 Para esta sección utilizaré Ubuntu 22.04 en modo Terminal.
 En primer lugar utilizaremos estos comandos para guardar el repositorio en el que está Terraform y actualizar la lista de repositorios.
@@ -656,6 +660,7 @@ Como conclusión, queda claro que mediante PHP y mySQL no es difícil hacer un f
   <li>https://developer.hashicorp.com/terraform/tutorials/kubernetes/eks</li>
   <li>https://rm-rf.es/como-conectar-ssh-instancia-aws-ec2-linux/#:~:text=C%C3%B3mo%20conectar%20por%20SSH%20a%20una%20instancia%20AWS,de%20instancia%2C%20IP%20y%20su%20DNS%20p%C3%BAblico%20</li>
   <li>https://developer.hashicorp.com/terraform/tutorials/kubernetes/kubernetes-provider</li>
+  <li>https://docs.aws.amazon.com/es_es/AmazonRDS/latest/UserGuide/TUT_WebAppWithRDS.html</li>
 </ul>
 
 # Autoría
