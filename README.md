@@ -297,8 +297,70 @@ El código fuente lo podemos ver en este archivo del repositorio:
 
 <a name="aws"></a>
 # Creando el servidor web y la base de datos en AWS y desplegando el foro
+<h3>Despliegue de la instancia de EC2
 ![image](https://user-images.githubusercontent.com/76048388/207176350-fe972fd5-6759-41d5-847b-11a4acc88e56.png)
+![image](https://user-images.githubusercontent.com/76048388/207180664-2d9f2bb2-f23c-43cc-9ff9-8d93c104d477.png)
+![image](https://user-images.githubusercontent.com/76048388/207180737-f53fa87e-3d62-435e-b9ab-8c39ef1f43a2.png)
+![image](https://user-images.githubusercontent.com/76048388/207180762-17517dac-da89-42e3-8cd0-a91ba5b770ed.png)
+![image](https://user-images.githubusercontent.com/76048388/207180861-460a0183-7037-493d-9c7f-7d90ec8a63b5.png)
+![image](https://user-images.githubusercontent.com/76048388/207180933-aee3d5d9-714e-41b0-9173-ace8fd1d9100.png)
+![image](https://user-images.githubusercontent.com/76048388/207181143-d8e1481a-4f1e-40da-9e57-1e6cab5aaf44.png)
 
+<h3>Despliegue del servidor de bases de datos</h3>
+![image](https://user-images.githubusercontent.com/76048388/207181202-6f01ef5a-08cf-4ebf-a891-53405e4033fc.png)
+![image](https://user-images.githubusercontent.com/76048388/207181299-ba2f8d7b-ca26-4f74-8eb0-e12653fa942e.png)
+![image](https://user-images.githubusercontent.com/76048388/207181397-78594edf-35bb-439a-b97a-4d6b64e876bc.png)
+![image](https://user-images.githubusercontent.com/76048388/207181584-d7af4508-de93-4898-8f47-8012170a27a0.png)
+![image](https://user-images.githubusercontent.com/76048388/207181727-baa40511-51d4-4c87-8aa5-af1ee1083f7a.png)
+![image](https://user-images.githubusercontent.com/76048388/207181776-22654200-1af9-4f6a-a179-b51ca8403d75.png)
+![image](https://user-images.githubusercontent.com/76048388/207181824-9caabd98-817a-421a-8818-b1cb0262a212.png)
+![image](https://user-images.githubusercontent.com/76048388/207182086-889b9d20-4483-43da-a5cb-9f37d88b1638.png)
+![image](https://user-images.githubusercontent.com/76048388/207182118-a44f1cb0-3ca1-486b-a60a-0a905f1e5829.png)
+![image](https://user-images.githubusercontent.com/76048388/207182144-c32378a9-3c9b-4575-8eb5-43b37998be1b.png)
+![image](https://user-images.githubusercontent.com/76048388/207182179-81c7651a-9f9f-4eaf-935d-f9780952f851.png)
+
+<h3>Instalación del servidor web Apache</h3>
+![image](https://user-images.githubusercontent.com/76048388/207182611-f76ea58c-ad3a-42b1-a126-2689f2e17c2b.png)
+![image](https://user-images.githubusercontent.com/76048388/207182747-8cb52e58-2ab8-45e7-b3c2-bfd81f0ba608.png)
+![image](https://user-images.githubusercontent.com/76048388/207183217-088e6ec7-9187-44bf-85fb-bd4ead1c3b7c.png)
+
+<pre><code>sudo apt-get update</code></pre>
+<pre><code>sudo apt install php8.0</code></pre>
+<pre><code>sudo apt install mariadb-server</code></pre>
+<pre><code>sudo apt-get install libapache2-mod-php</code></pre>
+<pre><code>sudo apt install apache2</code></pre>
+<pre><code>ubuntu@ip-172-31-32-150:~$ sudo systemctl status apache2
+● apache2.service - The Apache HTTP Server
+     Loaded: loaded (/lib/systemd/system/apache2.service; enabled; vendor preset: enabled)
+     Active: active (running) since Mon 2022-12-12 23:48:00 UTC; 1min 49s ago
+       Docs: https://httpd.apache.org/docs/2.4/
+   Main PID: 9340 (apache2)
+      Tasks: 6 (limit: 1143)
+     Memory: 11.0M
+        CPU: 51ms
+     CGroup: /system.slice/apache2.service
+             ├─9340 /usr/sbin/apache2 -k start
+             ├─9342 /usr/sbin/apache2 -k start
+             ├─9343 /usr/sbin/apache2 -k start
+             ├─9344 /usr/sbin/apache2 -k start
+             ├─9345 /usr/sbin/apache2 -k start
+             └─9346 /usr/sbin/apache2 -k start
+
+Dec 12 23:48:00 ip-172-31-32-150 systemd[1]: Starting The Apache HTTP Server...
+Dec 12 23:48:00 ip-172-31-32-150 systemd[1]: Started The Apache HTTP Server.</code></pre>
+<pre><code>sudo systemctl enable apache2</code></pre>
+<pre><code>sudo groupadd apache</code></pre>
+<pre><code>cat /etc/group</code></pre>
+<pre><code>sudo useradd ec2-user</code></pre>
+<pre><code>sudo usermod -a -G apache ec2-user</code></pre>
+<pre><code>sudo chown -R ec2-user:apache /var/www</code></pre>
+<pre><code>sudo chmod 2775 /var/www
+find /var/www -type d -exec sudo chmod 2775 {} \;</code></pre>
+<pre><code>find /var/www -type f -exec sudo chmod 0664 {} \;</code></pre>
+<pre><code>cd /var/www
+sudo mkdir inc
+cd inc</code></pre>
+<pre><code></code></pre>
 
 # Configurando Terraform
 Para esta sección utilizaré Ubuntu 22.04 en modo Terminal.
