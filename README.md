@@ -360,7 +360,15 @@ find /var/www -type d -exec sudo chmod 2775 {} \;</code></pre>
 <pre><code>cd /var/www
 sudo mkdir inc
 cd inc</code></pre>
-<pre><code></code></pre>
+<pre><code>nano dbinfo.inc</code></pre>
+<pre><code><?php
+
+define('DB_SERVER', 'db_instance_endpoint');
+define('DB_USERNAME', 'tutorial_user');
+define('DB_PASSWORD', 'master password');
+define('DB_DATABASE', 'sample');
+
+?></code></pre>
 
 # Configurando Terraform
 Para esta sección utilizaré Ubuntu 22.04 en modo Terminal.
