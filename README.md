@@ -13,6 +13,7 @@
       <li><a href="#xampp">XAMPP</a></li>
       <li><a href="#visualstudio">Visual Studio Code</a></li>
       <li><a href="#github">GitHub</a></li>
+      <li><a href="#ubuntu">Ubuntu 22.04</a></li>
       <li><a href="#awsinfra">Amazon Web Services</a></li>
     </ul>
   <li><a href="#foro">Foro</a></li>
@@ -58,6 +59,7 @@ XAMPP es un entorno de desarrollo web. La distribución incluye el servidor web 
 Este programa solamente lo usaré como entorno de pruebas mientras programo el foro, ya que después en AWS instalaré tanto Apache como mySQL, pero no el resto de servidores.
 
 Para que estos servidores funcionen, simplemente una vez instalado XAMPP, que se puede descargar desde <a href="https://www.apachefriends.org/es/index.html">aquí</a>, entraremos a su panel de control como administrador.
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/199494030-504ff5a0-0205-41ee-b8f0-bfc5e50b988e.png">
 <p>Posteriormente, le daremos a "Start" a los servicios que queramos utilizar. Como se puede ver en la imagen que hay a continuación, aparecerán el PID (código de proceso) del servicio activado y el puerto o puertos que tiene asignados dicho servicio. Los que no utilizamos simplemente se quedarán desactivados, para no consumir recursos de manera innecesaria.</p>
 
@@ -77,6 +79,10 @@ Visual Studio Code es un editor de código fuente desarrollado por Microsoft, qu
 <a name="github"></a>
 <h3>GitHub</h3>
 GitHub es una web para alojar proyectos utilizando el sistema de control de versiones Git, que es un software que diseñó Linus Torvalds, la misma persona que creó Linux, pensando en la eficiencia, la confiabilidad y compatibilidad del mantenimiento de versiones de aplicaciones cuando estas tienen un gran número de archivos de código fuente. Su propósito es llevar registro de los cambios en archivos de computadora incluyendo coordinar el trabajo que varias personas realizan sobre archivos compartidos en un repositorio de código. GitHub se utiliza principalmente para la creación de código fuente de programas de ordenador, y lo he elegido para poder alojar, además del contenido de mi memoria, que es este archivo <b>README.md</b>, el código fuente de mi foro, para luego poder por ejemplo clonarlo en la instancia donde alojaré el servidor web.
+
+<a name="ubuntu"></a>
+<h3>Ubuntu 22.04</h3>
+Ubuntu es una distribución Linux basada en Debian GNU/Linux, que incluye principalmente software libre y de código abierto. Lo utilizaré mediante el subsistema WSL de Windows, que permite implantar un sistema Linux en una línea de código de PowerShell, como si de una máquina virtual se tratara, y usarlo mediante la interfaz de Terminal. Utilizaré Ubuntu para acceder en remoto a la instancia creada en AWS.
 
 <a name="awsinfra"></a>
 <h3>Amazon Web Services</h3>
@@ -307,54 +313,88 @@ El código fuente lo podemos ver en este archivo del repositorio:
 <a name="ec2"></a>
 <h3>Despliegue de la instancia de EC2</h3>
 En primer lugar, hay que ir a <a>https://aws.amazon.com/es/</a>, donde crearemos una cuenta. Una vez creada, iremos a la sección dentro del panel llamada "Crear una solución". Allí elegiremos "Lance una página máquina virtual", que nos llevará a la consola de creación de EC2.
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207176350-fe972fd5-6759-41d5-847b-11a4acc88e56.png">
 Una vez allí, en primer lugar le daremos un nombre a la máquina y en segundo lugar elegiremos un sistema operativo, pudiendo elegir Amazon Linux, Amazon Linux 2, Ubuntu, Windows Server, Red Hat, etcétera. En este caso elegiré Amazon Linux 2, con la arquitectura de 64 bits. Al lado de la arquitectura veremos que sale el ID de la AMI. Esta es la imagen utilizada para crear la máquina.
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207460732-d4db2f08-837e-4f51-9345-cb960a36d0a2.png">
 Posteriormente se nos dará a elegir el tipo de instancia. Esto define el número de núcleos de CPU  y la cantidad de memoria RAM que utilizará. Con la micro para esta página es suficiente ya que no se espera un tráfico muy elevado y además es apta para la capa gratuita. Para otro tipo de recursos que se sepa que van a tener un tráfico mayor, sería necesario coger un tipo de instancia mayor, los precios de instancia salen desplegados debajo para eso. Una vez elegido el tipo, crearemos un par de claves para poder acceder por SSH.
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207561523-9bee920b-fd9c-484a-8088-dd507ee70a3b.png">
 Le daremos un nombre a ese par de claves y un tipo, para lo cual yo he usado RSA, que es un sistema criptográfico que me va a generar una clave de 2048 bits, por lo cual es bastante seguro. Elegiré como formato .pem ya que voy a usar OpenSSH en Ubuntu para acceder, pero si quisiera utilizar la aplicación Putty para Windows elegiría .ppk. Una vez le demos a crear, se nos descargará automáticamente el archivo en el ordenador, y deberemos guardarlo muy bien para no perder el acceso por SSH a la máquina.
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207180762-17517dac-da89-42e3-8cd0-a91ba5b770ed.png">
+<br/>
 Después entraremos en la configuración de red, donde nos saldrá el nombre de red que se va a utilizar. Crearemos un grupo de seguridad, lo cual es un firewall, en el cual permitamos el tráfico SSH solamente desde mi IP para mayor seguridad, y el tráfico HTTP (puerto 80) y HTTPS (puerto 443) desde cualquier punto de Internet. Esta configuración se podrá modificar después si es necesario.
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207563747-333d6d4c-0ed0-4e6c-81df-44069d3532a6.png">
 Finalmente, configuraremos el almacenamiento. Aquí elegiremos la cantidad de almacenamiento que queremos tener en la máquina, y el tipo de unidad de almacenamiento. Por ejemplo, gp2 es un SSD de uso general.
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207180933-aee3d5d9-714e-41b0-9173-ace8fd1d9100.png">
 Al elegir el tipo podremos elegir si queremos que el volumen se elimine cuando eliminemos la máquina virtual y si queremos que el disco esté cifrado.
 <img src="https://user-images.githubusercontent.com/76048388/207565567-df461055-08b8-4fa5-b141-c3eb99322d65.png">
 Por último, nos iremos a la sección "Resumen", a la derecha, y nos aseguraremos de que toda la configuración está bien. Cuando terminemos, le daremos a "Lanzar instancia" y la máquina se empezaría a crear.
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207461056-a194be2a-5ac3-4442-9bd5-96f67d6b6a9c.png">
 
 <a name="serv-basedatos"></a>
 <h3>Despliegue del servidor de bases de datos</h3>
 Una vez creada la instancia, crearemos la base de datos. Para ello iremos a la consola de creación mediante el enlace <a>https://eu-south-2.console.aws.amazon.com/rds</a>. Le daremos a "Crear base de datos".
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207566507-c2096266-eda0-4bb8-9531-0024cdd719d3.png">
+<br/>
 En la consola de creación de base de datos, elegiremos "Creación estándar", para poder elegir todos los parámetros y el motor MySQL ya que es el que se ha usado para crear el foro. En otros motores se podría elegir además otra edición, pero en este la única es "Comunidad de mySQL".
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207181397-78594edf-35bb-439a-b97a-4d6b64e876bc.png">
+<br/>
 En plantillas le daremos a "Capa gratuita", no podremos elegir las opciones de "Disponibilidad y durabilidad" ya que por defecto esta plantilla nos hace una instancia de base de datos única, que para el foro es suficiente.
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207181584-d7af4508-de93-4898-8f47-8012170a27a0.png">
+<br/>
 Le daremos un nombre al clúster (este nombre no es el de la base de datos, si no el de la instancia donde está). Crearemos un nombre de usuario maestro que podrá acceder a todo el contenido de la base de datos y una contraseña maestra.
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207567495-a2618647-5b68-4c2a-abb9-22052d948b26.png">
+<br/>
 Al igual que con la instancia de EC2, elegiremos un tipo de instancia y configuraremos su almacenamiento. Pincharemos "Habilitar escalado automático de almacenamiento" para que si se alcanza el almacenamiento que se le ha asignado al principio se le asigne más hasta un máximo de 1000GB. En este caso no se llegará a usar ni siquiera los 20GB, pero es una opción por si en un futuro la base de datos va a escalar mucho y tener cada vez más datos.
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207181776-22654200-1af9-4f6a-a179-b51ca8403d75.png">
+<br/>
 Posteriormente le indicaremos que se conecte a un recurso de EC2, para conectarlo con la instancia realizada antes, y elegiremos el nombre de dicha instancia. Elegiremos el tipo de red que va a usar la conexión y la VPC.
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207181824-9caabd98-817a-421a-8818-b1cb0262a212.png">
+<br/>
 Posteriormente indicaremos si queremos que la instancia de base de datos tenga una dirección IP pública o no. En este caso no la tendrá ya que solamente se accederá desde la instancia de EC2. La configuración de firewall la dejaremos como por defecto ya que ella sola creará los parámetros necesarios para poder conectar la instancia EC2 con esta.
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207182086-889b9d20-4483-43da-a5cb-9f37d88b1638.png">
+<br/>
 Elegiremos el puerto, que por defecto será 3306 que es el puerto que usa MySQL para las conexiones.
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207182118-a44f1cb0-3ca1-486b-a60a-0a905f1e5829.png">
+<br/>
 Elegiremos cómo queremos autenticarnos en esa base de datos, yo pondré que solo se requiera la contraseña.
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207182144-c32378a9-3c9b-4575-8eb5-43b37998be1b.png">
+<br/>
 Por último, le echaremos un vistazo a la sección de "Costos mensuales estimados" y si estamos conformes crearemos la base de datos.
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207182179-81c7651a-9f9f-4eaf-935d-f9780952f851.png">
+<br/>
 
 <a name="apache"></a>
 <h3>Instalación del servidor web Apache</h3>
 Iremos al panel de EC2 y echaremos un vistazo a las instancias que están activas. Elegimos la que queremos, que en mi caso es la única que hay, y clicamos arriba en "Conectar".
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207570248-b47131c2-53e4-4aab-9649-53a25f72c587.png">
+<br/>
 
 Saldrá la información para acceder por SSH y sus instrucciones. Copiaremos el comando del final y lo usaremos en Ubuntu, en una carpeta donde tengamos metida la clave .pem que descargamos antes. Este comando indica que queremos acceder por SSH con el fichero "servidor-web-proyecto.pem" mediante el usuario root a la dirección asignada a continuación. Esta dirección puede ser IP o DNS. En lugar de acceder al root, es recomendable acceder al ec2-user por seguridad, que es el usuario con poderes sudo que hay en la instancia. 
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207462154-b845ce2b-c664-4aef-990f-3d3a3b90608e.png">
+<br/>
 Una vez ejectuado ese comando, veremos cómo ya estamos dentro de la instancia EC2.
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207462367-e7a19ffe-7d61-4572-9a42-de33737091d7.png">
+<br/>
 
 A continuación procederemos a instalar Apache y sus dependencias. En primer lugar, actualizaremos los repositorios.
   <pre><code>sudo yum update -y</code></pre>
@@ -387,9 +427,13 @@ cd inc</code></pre>
 Dentro de esta carpeta crearé un archivo llamado <b>dbinfo.inc</b>
   <pre><code>nano dbinfo.inc</code></pre>  
 Aquí irá el siguiente contenido, que indica el punto de enlace de la base de datos (su IP o DNS), el nombre de usuario, su contraseña y la base de datos en cuestión. 
+  <br/>
   <img src="https://user-images.githubusercontent.com/76048388/207463470-2f1b4a2e-86ca-4e41-b1ee-0f581938f35f.png">
+  <br/>
   Para saber el punto de enlace, iremos al panel de RDS, seleccionaremos la instancia de base de datos, y allí podremos verlo.
+  <br/>
   <img src="https://user-images.githubusercontent.com/76048388/207576418-8c0b32b6-fb7a-42be-818a-b6787c4bd213.png">
+<br/>
 
 Para poder tener la página web que ya tengo programada en la instancia, voy a clonar el contenido de este mismo repositorio. Para eso en primer lugar instalaré el comando git, que me permitirá clonar repositorios pero también hacer cambios en repositorios a los que tenga acceso.
   <pre><code>sudo yum install git</code></pre>  
@@ -399,19 +443,29 @@ Para poder tener la página web que ya tengo programada en la instancia, voy a c
   <pre><code>git clone https://github.com/AndreaOsma/ProyectoASIR</code></pre>  
   
   Como podemos comprobar en la siguiente imagen, al listar el contenido del directorio veremos que ahora está clonado el repositorio en nuestra instancia.
+  <br/>
   <img src="https://user-images.githubusercontent.com/76048388/207464402-f3521711-9b45-4ac0-8197-3aa5b7c1f078.png">
+<br/>
 
 Como quiero que el contenido esté en la carpeta <b>/var/www/html</b>, moveré todo el contenido de <b>ProyectoASIR/proyecto/foro</b> al directorio actual, que es el <b>/var/www/html</b>, y una vez hecho borraré la carpeta ya que ya no la necesito más.
   <pre><code>mv ProyectoASIR/proyecto/foro/* ./
   rm -r ProyectoASIR/</code></pre>  
   
   Si listamos veremos que ahora estaré todo el contenido en <b>/var/www/html</b>
-  <img src="https://user-images.githubusercontent.com/76048388/207464639-32df1a13-74c8-46e1-b1b1-1bdb89b80854.png">
+  <br/>
+<br/>
+<img src="https://user-images.githubusercontent.com/76048388/207464639-32df1a13-74c8-46e1-b1b1-1bdb89b80854.png">
+<br/>
 
 Si ahora vamos a la página web mediante su DNS o IP veremos que sale un error de que no se ha podido establecer una conexión con la base de datos. Ese error es el que yo he metido en el fichero <b>connect.php</b> para que muestre si no ha podido establecer una conexión con la base de datos.
-  <img src="https://user-images.githubusercontent.com/76048388/207464829-278e1f51-88c9-473c-8e0f-eadd94c8229b.png">
+<br/>
+<br/>
+<img src="https://user-images.githubusercontent.com/76048388/207464829-278e1f51-88c9-473c-8e0f-eadd94c8229b.png">
+<br/>
 Para solucionarlo, dentro de <b>connect.php</b> hay que poner los mismos parámetros que en <b>dbinfo.inc</b>, es decir: el punto de enlace, el usuario, la contraseña y la base de datos.
+<br/>
   <img src="https://user-images.githubusercontent.com/76048388/207468498-99bd168d-5c4d-4831-b376-da7382d8a883.png">
+  <br/>
   
   <a name="contenido"></a>
   <h3>Añadiendo contenido a la base de datos</h3>
@@ -421,37 +475,60 @@ Para solucionarlo, dentro de <b>connect.php</b> hay que poner los mismos paráme
   <pre><code>mysql -h <puntodeenlace> -P 3306 -u <usuario> -p</code></pre>
   
   Como podemos ver en la siguiente imagen, la conexión se ha realizado con éxito.
+  <br/>
   <img src="https://user-images.githubusercontent.com/76048388/207466191-3d09d6d3-ae84-45ee-8df8-84f87d499e22.png">
+<br/>
 
 No estamos dentro de ninguna base de datos, por lo que mostraremos las bases de datos que actualmente existen.
+  <br/>
   <img src="https://user-images.githubusercontent.com/76048388/207466437-90ff75af-cca0-470d-9820-08742cc4f576.png">
+  <br/>
   
 Crearemos la base de datos foro, y mostraremos de nuevo las bases de datos existentes para comprobar que se ha creado con éxito.  
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207466517-4a605c74-201f-48d3-a137-d4168d0fdd2f.png">
+<br/>
 
 Le indicaremos a MySQL que queremos usar la base de datos <b>foro</b>.
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207466572-0b8fbdfd-0e5b-4558-81ff-3bf2372a421d.png">
+<br/>
 
 Una vez dentro de la base de datos, crearemos las tablas de usuarios, categorías, temas y posts y haremos los alter table.
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207466706-bc40d66f-5c9d-47fd-a899-8ad664b49689.png">
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207466740-b42cc4d1-9a0e-481c-9958-0bafe4a9acec.png">
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207466847-1ff5b6f9-1f0c-4859-897d-67eaa6741ec1.png">
+<br/>
 
 Por último, mostraremos las tablas existentes para comprobar que estén creadas.
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207467023-8b5e6902-fb2f-4620-a83e-bf6c45a5eacd.png">
+<br/>
 
 Cuando ya podamos acceder a la página web y hacer un registro, si queremos que un usuario tenga permisos de administrador para poder crear categorías, entraremos en la base de datos del foro y haremos un update, donde cambiaremos el nivel de usuario a 1 al usuario cuyo nombre de usuario sea el que queremos cambiar. También se puede usar el código de usuario ya que es una condición también única.
-  <img src="https://user-images.githubusercontent.com/76048388/207469031-0330307e-1d5f-4ca4-8c29-5ad9f8e31ba9.png">
-  
+<br/>
+<img src="https://user-images.githubusercontent.com/76048388/207469031-0330307e-1d5f-4ca4-8c29-5ad9f8e31ba9.png">
+<br/>
+
   <a name="funcionamiento"></a>
   <h3>Prueba de funcionamiento</h3>
   Ahora podremos acceder a la página web y ejecutarla con normalidad, como accedíamos en local.
-  <img src="https://user-images.githubusercontent.com/76048388/207477807-3fe91b67-3d6b-40cf-87d4-5a56b0d89b84.png">
+<br/>
+<img src="https://user-images.githubusercontent.com/76048388/207477807-3fe91b67-3d6b-40cf-87d4-5a56b0d89b84.png">
+  <br/>
+  
   Podremos registrar usuarios e iniciar sesión con ellos, al igual que en local.
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207477912-e4babd8a-4923-4e43-b663-f82b27cad1a8.png">
+<br/>
 
 Podremos crear categorías, temas, respuestas... y verlos desplegados al igual que en local.
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207478011-cea6659b-5fa4-4043-a058-8479c39772ec.png">
+<br/>
 
 <a name="https"></a>
 <h3>Activación de HTTPS</h3>
@@ -477,10 +554,14 @@ Por último, reiniciaremos Apache.
 <pre><code>sudo systemctl restart httpd</code></pre>
 
 Finalmente, podremos acceder a la página mediante el protocolo HTTPS, saldrá que no es seguro, pero se podrá acceder.
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207589569-9e7894f9-7a43-4992-a58c-72b465dc0342.png">
+<br/>
 
 Para evitar que saliese el mensaje "No seguro", habría que crear una petición de certificación y enviarle ese archivo a una autoridad de certificación, que son empresas que comprueban ese archivo, si le dan el visto bueno te enviarían un certificado firmado y finalmente se configuraría Apache para usar ese certificado. También existe la opción de configurar un DNS, para en lugar de acceder mediante la IP del servidor o la DNS "https://ec2-*-*-*-*.eu-south-2.compute.amazonaws.com", acceder mediante una DNS legible y fácil de recordar como podría ser "proyectoasirandrea.com". Para eso tendríamos que comprar un dominio, que mismamente en AWS se puede comprar en el panel de <b>Route 53</b>, o en otras empresas que ofrecen estos servicios. Podríamos comprar el DNS que quisiéramos y estuviera disponible, con un precio que depende del subdominio (por ejemplo <b>.com</b> son 12$ al año) y crear una zona alojada por ese dominio, la cual sería la DNS de nuestra instancia.
+<br/>
 <img src="https://user-images.githubusercontent.com/76048388/207591358-41c44b25-9fa0-4155-a4a7-c6c9e2d8dc59.png">
+<br/>
 
 Yo no voy a hacer ninguna de las dos opciones, ya que los objetivos del proyecto son puramente académicos, pero existen las dos opciones. En la bibliografía dejaré más información sobre ello.
 
@@ -490,18 +571,40 @@ Como conclusión, queda claro que mediante PHP y mySQL no es difícil hacer un f
 
 <a name="glosario"></a>
 # Glosario
+<dl>
+  <dt>PHP</dt>
+  <dd>PHP es un lenguaje de programación de uso general que se adapta especialmente al desarrollo web. El código PHP suele ser procesado en un servidor web por un intérprete PHP implementado como un módulo, un daemon o como un ejecutable de interfaz de entrada común (CGI). En un servidor web, el resultado del código PHP interpretado y ejecutado —que puede ser cualquier tipo de datos, como el HTML generado o datos de imágenes binarias— formaría la totalidad o parte de una respuesta HTTP.</dd>
+  <dt>MySQL</dt>
+  <dd>MySQL es un sistema de gestión de bases de datos relacional desarrollado bajo licencia dual: Licencia pública general/Licencia comercial por Oracle Corporation y está considerada como la base de datos de código abierto más popular del mundo, y una de las más populares en general junto a Oracle y Microsoft SQL Server, todo para entornos de desarrollo web.</dd>
+  <dt>WSL</dt>
+  <dd>Subsistema de Windows para Linux (WSL) es una capa de compatibilidad desarrollada por Microsoft para correr ejecutables de Linux (en formato ELF) nativamente en Windows 10 y Windows Server 2019. A partir de junio de 2019 está disponible WSL versión 2, el cual incorpora cambios importantes, como el uso de un núcleo Linux real.</dd>
+  <dt>Apache</dt>
+  <dd>El servidor HTTP Apache es un servidor web HTTP de código abierto, para plataformas Unix (BSD, GNU/Linux, etc.), Microsoft Windows, Macintosh y otras, que implementa el protocolo HTTP/1.1 y la noción de sitio virtual según la normativa RFC 2616.</dd>
+  <dt>MariaDB</dt>
+  <dd>MariaDB es un sistema de gestión de bases de datos derivado de MySQL con licencia GPL (General Public License). Es desarrollado por Michael (Monty) Widenius —fundador de MySQL—, la fundación MariaDB y la comunidad de desarrolladores de software libre. Introduce dos motores de almacenamiento nuevos, uno llamado Aria —que reemplaza a MyISAM— y otro llamado XtraDB —en sustitución de InnoDB—. Tiene una alta compatibilidad con MySQL ya que posee las mismas órdenes, interfaces, API y bibliotecas, siendo su objetivo poder cambiar un servidor por otro directamente.</dd>
+  <dt>EC2</dt>
+  <dd>EC2 (Elastic Compute Cloud) es un servicio de computación bajo demanda en la plataforma de nube de AWS. Proporciona todos los servicios que ofrecería un ordenador junto a la flexibilidad de un entorno virtual. También permite a los usuarios configurar instancias y sus requisitos. Por ejemplo, la RAM o el almacenamiento que se requieran para un proyecto.</dd>
+  <dt>RDS</dt>
+  <dd>El Servicio de Bases de Datos Relacionales de Amazon (o Amazon RDS) es un servicio de base de datos relacional distribuido de Amazon Web Services (AWS). Es un servicio web que se ejecuta en la nube diseñado para simplificar la configuración, el funcionamiento y el escalado de una base de datos relacional para su uso en aplicaciones.</dd>
+</dl>
 
 <a name="bibliografia"></a>
 # Bibliografía
 <ul>
-  <li>https://www.apachefriends.org/es/index.html</li>
-  <li>https://code.tutsplus.com/es/tutorials/how-to-create-a-phpmysql-powered-forum-from-scratch--net-10188</li>
-  <li>https://developer.hashicorp.com/terraform/tutorials/aws-get-started</li>
-  <li>https://rm-rf.es/como-conectar-ssh-instancia-aws-ec2-linux/#:~:text=C%C3%B3mo%20conectar%20por%20SSH%20a%20una%20instancia%20AWS,de%20instancia%2C%20IP%20y%20su%20DNS%20p%C3%BAblico%20</li>
-  <li>https://docs.aws.amazon.com/es_es/AmazonRDS/latest/UserGuide/TUT_WebAppWithRDS.html</li>
-  <li>https://aws.amazon.com/es/getting-started/hands-on/deploy-wordpress-with-amazon-rds</li>
-  <li>https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/SSL-on-amazon-linux-2.html</li>
-  <li>https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/Welcome.html</li>
+  <li>XAMPP. (s.f.). Obtenido de Apache Friends: https://www.apachefriends.org/es/index.html</li>
+  <li>Padje, E. (17 de Marzo de 2010). How to Create a PHP/MySQL Powered Forum From Scratch. Obtenido de Envato Tuts+: https://code.tutsplus.com/tutorials/how-to-create-a-phpmysql-powered-forum-from-scratch--net-10188</li>
+  <li>Explicación: crear un servidor web y una instancia de base de datos de Amazon RDS. (s.f.). Obtenido de AWS: https://docs.aws.amazon.com/es_es/AmazonRDS/latest/UserGuide/TUT_WebAppWithRDS.html</li>
+  <li>Lanzamiento de una instancia de EC2. (s.f.). Obtenido de AWS: https://docs.aws.amazon.com/es_es/AmazonRDS/latest/UserGuide/CHAP_Tutorials.WebServerDB.LaunchEC2.html</li>
+  <li>Crear una instancia de base de datos. (s.f.). Obtenido de AWS: https://docs.aws.amazon.com/es_es/AmazonRDS/latest/UserGuide/CHAP_Tutorials.WebServerDB.CreateDBInstance.html</li>
+  <li>Instalación de un servidor web en la instancia de EC2. (s.f.). Obtenido de AWS: https://docs.aws.amazon.com/es_es/AmazonRDS/latest/UserGuide/CHAP_Tutorials.WebServerDB.CreateWebServer.html</li>
+  <li>Tutorial: Configure SSL/TLS on Amazon Linux 2. (s.f.). Obtenido de AWS: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/SSL-on-amazon-linux-2.html</li>
+  <li>What is Amazon Route 53? (s.f.). Obtenido de AWS: https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/Welcome.html</li>
+  <li>PHP. (s.f.). Obtenido de Wikipedia: https://es.wikipedia.org/wiki/PHP</li>
+  <li>MySQL. (s.f.). Obtenido de Wikipedia: https://es.wikipedia.org/wiki/MySQL</li>
+  <li>Servidor HTTP Apache. (s.f.). Obtenido de Wikipedia: https://es.wikipedia.org/wiki/Servidor_HTTP_Apache</li>
+  <li>MariaDB. (s.f.). Obtenido de Wikipedia: https://es.wikipedia.org/wiki/MariaDB</li>
+  <li>What is Elastic Compute Cloud (EC2)? (s.f.). Obtenido de Geeks for Geeks: https://www.geeksforgeeks.org/what-is-elastic-compute-cloud-ec2/</li>
+  <li>Servicio de Bases de Datos Relaciones de Amazon. (s.f.). Obtenido de Wikipedia: https://es.wikipedia.org/wiki/Servicio_de_Bases_de_Datos_Relaciones_de_Amazon</li>
 </ul>
 
 # Licencia
