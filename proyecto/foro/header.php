@@ -8,7 +8,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Foro</title>
     <link rel="stylesheet" href="css/estilo.css" type="text/css">
-    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="img/favicon.ico">
 </head>
 <body>
 <a href="index.php"><h1>Foro para el proyecto de 2º de ASIR</h1></a>
