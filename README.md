@@ -3,31 +3,40 @@
 > CFP Juan XXIII - Ciclo 2020/2022
 > CFGS Administración de Sistemas Informáticos en Red 
 
-# Implantación de foro en AWS mediante Terraform
+# Implantación de foro en AWS
 # Índice
 <p>Este proyecto se compone de varias partes.</p>
 <ul>
   <li><a href="#introduccion">Introducción</a></li>
   <li><a href="#programas">Programas e infraestructura utilizados</a></li>
     <ul>
-      <li>XAMPP</li>
-      <li>Visual Studio Code</li>
-      <li>Terraform</li>
-      <li>Amazon Web Services</li>
+      <li><a href="#xampp">XAMPP</a></li>
+      <li><a href="#visualstudio">Visual Studio Code</a></li>
+      <li><a href="#github">GitHub</a></li>
+      <li><a href="#awsinfra">Amazon Web Services</a></li>
     </ul>
   <li><a href="#foro">Foro</a></li>
      <ul>
-       <li>Base de datos</li>
-       <li>Código</li>
+       <li><a href="#basedatos">Base de datos</a></li>
+       <li><a href="#codigo">Código</a></li>
      </ul>
-  <li><a href="#aws">Implantanción en AWS mediante Terraform y Kubernetes</li>
-  <li>Glosario</li>
-  <li>Bibliografía</li>
+  <li><a href="#aws">Creación del servidor web y la base de datos en AWS</a></li>
+    <ul>
+      <li><a href="#ec2">Despliegue de la instancia de EC2</a></li>
+      <li><a href="#serv-basedatos">Despliegue del servidor de bases de datos</a></li>
+      <li><a href="#apache">Instalación del servidor web Apache</a></li>
+      <li><a href="#contenido">Añadiendo contenido a la base de datos</a></li>
+      <li><a href="#funcionamiento">Prueba de funcionamiento</a></li>
+      <li><a href="#https">Activación de HTTPS</a></li>
+    </ul>
+  <li><a href="#conclusion">Conclusión del proyecto</a></li>
+  <li><a href="#glosario">Glosario</a></li>
+  <li><a href="#bibliografia">Bibliografía</a></li>
 </ul>
 
 <a name="introduccion"></a>
 # Introducción
-En este proyecto he querido mostrar los beneficios que el almacenamiento en la nube puede tener, tanto para una persona individual como para una empresa, como espacio para desplegar nuestros proyectos. Lo he querido mostrar mediante un foro que yo misma he programado mediante PHP y mySQL, debido a mi interés específico en la programación de páginas web. También he querido utilizar Terraform debido a los beneficios que veremos posteriormente.
+En este proyecto he querido mostrar los beneficios que el almacenamiento en la nube puede tener, tanto para una persona individual como para una empresa, como espacio para desplegar nuestros proyectos. Lo he querido mostrar mediante un foro que he programado mediante PHP y mySQL, debido a mi interés en la programación de páginas web.
 
 El proyecto consistirá en un foro en el que los miembros podrán compartir sus pensamientos con el resto de los usuarios, por lo tanto podrán:
 <ul>
@@ -39,10 +48,11 @@ El proyecto consistirá en un foro en el que los miembros podrán compartir sus 
   <li>Responder a los temas que ya haya publicados.</li>
 </ul>
 
-A continuación, usaré AWS (Amazon Web Services) para desplegar esa página web, y que cualquier persona con su IP o DNS pueda acceder sin problemas. Para esto, utilizaré Terraform, para tener la posibilidad de reducir los costes y que  si en un futuro queramos cambiar a otro proveedor de infraestructura (como Microsoft Azure o Google Cloud) podamos hacerlo sin ninguna complicación.
+A continuación, usaré AWS (Amazon Web Services) para desplegar esa página web, y que cualquier persona con su IP o DNS pueda acceder sin problemas. Le daré seguridad mediante el protocolo HTTPS y mostaré opciones como <b>Route 53</b> para darle un nombre de dominio a la página web.
 
 <a name="programas"></a>
 # Programas e infraestructura utilizados
+<a name="xampp"></a>
 <h3>XAMPP</h3>
 XAMPP es un entorno de desarrollo web. La distribución incluye el servidor web Apache, un servidor de bases de datos mySQL, un servidor FTP Filezilla, el servidor de correo Mercury y el contenedor Tomcat para utilizar el lenguaje de programación Java. Puesto que este proyecto estará programado en PHP, JavaScript y mySQL, solo necesitaremos los dos primeros (Apache y mySQL). XAMPP funciona de manera que crea estos servidores en la máquina donde se instalen, pudiendo luego acceder a ellos o bien desde la IP del dispositivo y el puerto del servidor (por ejemplo: http://192.168.1.60:80 para acceder al servidor Apache, es decir, a la web principal) o bien accediendo desde la propia máquina poniendo http://localhost en el navegador.
 Este programa solamente lo usaré como entorno de pruebas mientras programo el foro, ya que después en AWS instalaré tanto Apache como mySQL, pero no el resto de servidores.
@@ -59,27 +69,24 @@ Para que estos servidores funcionen, simplemente una vez instalado XAMPP, que se
 
 <br/>
 
+<a name="visualstudio"></a>
 <h3>Visual Studio Code</h3>
 Visual Studio Code es un editor de código fuente desarrollado por Microsoft, que tiene aplicaciones para Windows, Linux, macOS y web. Tiene control integrado de Git y permite la instalación de extensiones para depurar el código de cualquier lenguaje y encontrar errores. He decidido utilizar este programa ya que, primero, ayuda con la depuración de errores y la sintaxis, y segundo, permite iniciar sesión con la cuenta de Microsoft o la de Github para poder tener una copia de seguridad del código o en el caso de Github poder clonar repositorios con facilidad.
 <br/>
 
-<h3>Terraform</h3>
-<p>Una vez programada la página web habiendo utilizado XAMPP como entorno de pruebas, utilizaré <a href="https://www.terraform.io">Terraform</a> para el despliegue en AWS. Terraform permite definir la infraestructura como código, esto quiere decir que es posible escribir en un fichero de texto la definición de la infraestructura usando un lenguaje de programación declarativo y simple. Esto tiene varios beneficios:
-<ul>
-<li>En primer lugar, que toda la infraestructura utilizada se puede administrar desde una sola aplicación, lo cual a una empresa, donde a la larga existen un volumen de servicios elevados, le permite desplegar estos servicios y sus dependencias, y cuando se quiera dejar de usar el proveedor que se esté utilizando (como por ejemplo AWS), cerrar estos servicios y dependencias para poder llevarlos a otro proveedor. Si no se utilizase Terraform, podría quedar algún servicio abierto por error, suponiendo esto un coste extra a la empresa o usuario, ya que todos los servicios que se utilicen en la nube tienen un coste que cobran a final de mes. Con Terraform, todo quedaría cerrado evitando estas situaciones.</li>
-<li>En segundo lugar, relacionado con lo dicho en el punto anterior, Terraform no se limita a un solo proveedor, por lo que por ejemplo una empresa que utilizase AWS, podría migrar toda la infraestructura a otros proveedores como Azure de una forma sencilla y evitando los posibles errores que comenté en el punto anterior.</li>
-<li>Como extra, todas las configuraciones que se hacen en Terraform pueden ser compartidas y reutilizables, con lo que los diferentes trabajadores que gestionasen Terraform en la empresa tendrían acceso a los mismos archivos y configuraciones.</li>
-</ul>
+<a name="github"></a>
+<h3>GitHub</h3>
+GitHub es una web para alojar proyectos utilizando el sistema de control de versiones Git, que es un software que diseñó Linus Torvalds, la misma persona que creó Linux, pensando en la eficiencia, la confiabilidad y compatibilidad del mantenimiento de versiones de aplicaciones cuando estas tienen un gran número de archivos de código fuente. Su propósito es llevar registro de los cambios en archivos de computadora incluyendo coordinar el trabajo que varias personas realizan sobre archivos compartidos en un repositorio de código. GitHub se utiliza principalmente para la creación de código fuente de programas de ordenador, y lo he elegido para poder alojar, además del contenido de mi memoria, que es este archivo <b>README.md</b>, el código fuente de mi foro, para luego poder por ejemplo clonarlo en la instancia donde alojaré el servidor web.
 
-<br/>
-
+<a name="awsinfra"></a>
 <h3>Amazon Web Services</h3>
 Amazon Web Services, abreviado como AWS, es una colección de servicios web que en conjunto forman una plataforma de computación en la nube. La mayoría de estos servicios no están expuestos directamente a los usuarios finales, sino que ofrecen una funcionalidad que otros desarrolladores puedan utilizar en sus aplicaciones. Se accede a través de HTTP, pudiendo realizar todas las gestiones a través de una consola web, pero una vez ya realizado el registro también se puede acceder mediante línea de comandos instalando el paquete que lo permite.
-AWS está situado en 18 regiones geográficas, y solamente en Europa hay servidores en cuatro diferentes ciudades, cada una con tres zonas diferentes de disponibilidad. Las zonas de seguridad son los centros de datos que proporcionan sus servicios, y están aisladas unas de otras para evitar la propagación de cortes entre las zonas. Esto nos da la seguridad de que es prácticamente imposible que nuestros servicios dejen de estar disponibles en algún periodo de tiempo, ya que sería muy complicado que todas las zonas de disponibilidad cayesen a la vez, y si cayese solamente una no importaría ya que nuestros datos tienen una réplica en otra.
+AWS está situado en 18 regiones geográficas, y solamente en Europa hay servidores en cinco diferentes ciudades, cada una con tres zonas diferentes de disponibilidad. Las zonas de seguridad son los centros de datos que proporcionan sus servicios, y están aisladas unas de otras para evitar la propagación de cortes entre las zonas. Esto nos da la seguridad de que es prácticamente imposible que nuestros servicios dejen de estar disponibles en algún periodo de tiempo, ya que sería muy complicado que todas las zonas de disponibilidad cayesen a la vez, y si cayese solamente una no importaría ya que nuestros datos tienen una réplica en otra.
 Hay otros servicios como Azure, de Microsoft, o Gcloud, de Google, siendo estos son competidores más directos, pero yo he elegido AWS debido a que es donde tengo cierta experiencia.
 
 <a name="foro"></a>
 # Foro
+<a name="basedatos"></a>
 <h2>Base de datos</h2>
 <p>El objetivo de esta sección es realizar una página web, un foro creado en PHP con una base de datos mySQL para que los usuarios puedan compartir sus pensamientos, ideas o quejas. Está enfocado a una red de empresa, por lo que alguien que no sea usuario no podría ver el contenido, pero se podría adaptar a ser un foro normal quitando solamente un par de líneas de código. Podríamos utilizar otros servicios como Slack o Discord, donde crear un foro con diferentes subforos con esta misma misión, pero haciendo nuestro propio foro nos aseguramos de tener una web propia, sin necesidad de depender de los servidores de terceros.</p>
 <h3>Relación de tablas</h3>
@@ -146,7 +153,7 @@ ALTER TABLE temas ADD FOREIGN KEY(autor_tema) REFERENCES usuarios(cod_usuario) O
 
 ALTER TABLE posts ADD FOREIGN KEY(tema_post) REFERENCES temas(cod_tema) ON DELETE RESTRICT ON UPDATE CASCADE;
 </pre>
-
+<a name="codigo"></a>
 # Código PHP
 <h3>Cabecera y pie de página</h3>
 En primer lugar, crearemos un archivo <b>header.php</b>. Este archivo contendrá el menú, y estará incluido al principio del código PHP de cada archivo con la línea: <pre>include "header.php";</pre>
@@ -296,433 +303,208 @@ El código fuente lo podemos ver en este archivo del repositorio:
 <a href="https://github.com/AndreaOsma/ProyectoASIR/blob/main/proyecto/foro/respuesta.php">respuesta.php</a>
 
 <a name="aws"></a>
-# Creando el servidor web y la base de datos en AWS y desplegando el foro
+# Creación del servidor web y la base de datos en AWS
+<a name="ec2"></a>
 <h3>Despliegue de la instancia de EC2</h3>
 En primer lugar, hay que ir a <a>https://aws.amazon.com/es/</a>, donde crearemos una cuenta. Una vez creada, iremos a la sección dentro del panel llamada "Crear una solución". Allí elegiremos "Lance una página máquina virtual", que nos llevará a la consola de creación de EC2.
 <img src="https://user-images.githubusercontent.com/76048388/207176350-fe972fd5-6759-41d5-847b-11a4acc88e56.png">
 Una vez allí, en primer lugar le daremos un nombre a la máquina y en segundo lugar elegiremos un sistema operativo, pudiendo elegir Amazon Linux, Amazon Linux 2, Ubuntu, Windows Server, Red Hat, etcétera. En este caso elegiré Amazon Linux 2, con la arquitectura de 64 bits. Al lado de la arquitectura veremos que sale el ID de la AMI. Esta es la imagen utilizada para crear la máquina.
 <img src="https://user-images.githubusercontent.com/76048388/207460732-d4db2f08-837e-4f51-9345-cb960a36d0a2.png">
-<img src="https://user-images.githubusercontent.com/76048388/207180737-f53fa87e-3d62-435e-b9ab-8c39ef1f43a2.png">
+Posteriormente se nos dará a elegir el tipo de instancia. Esto define el número de núcleos de CPU  y la cantidad de memoria RAM que utilizará. Con la micro para esta página es suficiente ya que no se espera un tráfico muy elevado y además es apta para la capa gratuita. Para otro tipo de recursos que se sepa que van a tener un tráfico mayor, sería necesario coger un tipo de instancia mayor, los precios de instancia salen desplegados debajo para eso. Una vez elegido el tipo, crearemos un par de claves para poder acceder por SSH.
+<img src="https://user-images.githubusercontent.com/76048388/207561523-9bee920b-fd9c-484a-8088-dd507ee70a3b.png">
+Le daremos un nombre a ese par de claves y un tipo, para lo cual yo he usado RSA, que es un sistema criptográfico que me va a generar una clave de 2048 bits, por lo cual es bastante seguro. Elegiré como formato .pem ya que voy a usar OpenSSH en Ubuntu para acceder, pero si quisiera utilizar la aplicación Putty para Windows elegiría .ppk. Una vez le demos a crear, se nos descargará automáticamente el archivo en el ordenador, y deberemos guardarlo muy bien para no perder el acceso por SSH a la máquina.
 <img src="https://user-images.githubusercontent.com/76048388/207180762-17517dac-da89-42e3-8cd0-a91ba5b770ed.png">
-<img src="https://user-images.githubusercontent.com/76048388/207180861-460a0183-7037-493d-9c7f-7d90ec8a63b5.png">
+Después entraremos en la configuración de red, donde nos saldrá el nombre de red que se va a utilizar. Crearemos un grupo de seguridad, lo cual es un firewall, en el cual permitamos el tráfico SSH solamente desde mi IP para mayor seguridad, y el tráfico HTTP (puerto 80) y HTTPS (puerto 443) desde cualquier punto de Internet. Esta configuración se podrá modificar después si es necesario.
+<img src="https://user-images.githubusercontent.com/76048388/207563747-333d6d4c-0ed0-4e6c-81df-44069d3532a6.png">
+Finalmente, configuraremos el almacenamiento. Aquí elegiremos la cantidad de almacenamiento que queremos tener en la máquina, y el tipo de unidad de almacenamiento. Por ejemplo, gp2 es un SSD de uso general.
 <img src="https://user-images.githubusercontent.com/76048388/207180933-aee3d5d9-714e-41b0-9173-ace8fd1d9100.png">
+Al elegir el tipo podremos elegir si queremos que el volumen se elimine cuando eliminemos la máquina virtual y si queremos que el disco esté cifrado.
+<img src="https://user-images.githubusercontent.com/76048388/207565567-df461055-08b8-4fa5-b141-c3eb99322d65.png">
+Por último, nos iremos a la sección "Resumen", a la derecha, y nos aseguraremos de que toda la configuración está bien. Cuando terminemos, le daremos a "Lanzar instancia" y la máquina se empezaría a crear.
 <img src="https://user-images.githubusercontent.com/76048388/207461056-a194be2a-5ac3-4442-9bd5-96f67d6b6a9c.png">
 
+<a name="serv-basedatos"></a>
 <h3>Despliegue del servidor de bases de datos</h3>
-<img src="https://user-images.githubusercontent.com/76048388/207181202-6f01ef5a-08cf-4ebf-a891-53405e4033fc.png">
-<img src="https://user-images.githubusercontent.com/76048388/207181299-ba2f8d7b-ca26-4f74-8eb0-e12653fa942e.png">
+Una vez creada la instancia, crearemos la base de datos. Para ello iremos a la consola de creación mediante el enlace <a>https://eu-south-2.console.aws.amazon.com/rds</a>. Le daremos a "Crear base de datos".
+<img src="https://user-images.githubusercontent.com/76048388/207566507-c2096266-eda0-4bb8-9531-0024cdd719d3.png">
+En la consola de creación de base de datos, elegiremos "Creación estándar", para poder elegir todos los parámetros y el motor MySQL ya que es el que se ha usado para crear el foro. En otros motores se podría elegir además otra edición, pero en este la única es "Comunidad de mySQL".
 <img src="https://user-images.githubusercontent.com/76048388/207181397-78594edf-35bb-439a-b97a-4d6b64e876bc.png">
+En plantillas le daremos a "Capa gratuita", no podremos elegir las opciones de "Disponibilidad y durabilidad" ya que por defecto esta plantilla nos hace una instancia de base de datos única, que para el foro es suficiente.
 <img src="https://user-images.githubusercontent.com/76048388/207181584-d7af4508-de93-4898-8f47-8012170a27a0.png">
-<img src="https://user-images.githubusercontent.com/76048388/207181727-baa40511-51d4-4c87-8aa5-af1ee1083f7a.png">
+Le daremos un nombre al clúster (este nombre no es el de la base de datos, si no el de la instancia donde está). Crearemos un nombre de usuario maestro que podrá acceder a todo el contenido de la base de datos y una contraseña maestra.
+<img src="https://user-images.githubusercontent.com/76048388/207567495-a2618647-5b68-4c2a-abb9-22052d948b26.png">
+Al igual que con la instancia de EC2, elegiremos un tipo de instancia y configuraremos su almacenamiento. Pincharemos "Habilitar escalado automático de almacenamiento" para que si se alcanza el almacenamiento que se le ha asignado al principio se le asigne más hasta un máximo de 1000GB. En este caso no se llegará a usar ni siquiera los 20GB, pero es una opción por si en un futuro la base de datos va a escalar mucho y tener cada vez más datos.
 <img src="https://user-images.githubusercontent.com/76048388/207181776-22654200-1af9-4f6a-a179-b51ca8403d75.png">
+Posteriormente le indicaremos que se conecte a un recurso de EC2, para conectarlo con la instancia realizada antes, y elegiremos el nombre de dicha instancia. Elegiremos el tipo de red que va a usar la conexión y la VPC.
 <img src="https://user-images.githubusercontent.com/76048388/207181824-9caabd98-817a-421a-8818-b1cb0262a212.png">
+Posteriormente indicaremos si queremos que la instancia de base de datos tenga una dirección IP pública o no. En este caso no la tendrá ya que solamente se accederá desde la instancia de EC2. La configuración de firewall la dejaremos como por defecto ya que ella sola creará los parámetros necesarios para poder conectar la instancia EC2 con esta.
 <img src="https://user-images.githubusercontent.com/76048388/207182086-889b9d20-4483-43da-a5cb-9f37d88b1638.png">
+Elegiremos el puerto, que por defecto será 3306 que es el puerto que usa MySQL para las conexiones.
 <img src="https://user-images.githubusercontent.com/76048388/207182118-a44f1cb0-3ca1-486b-a60a-0a905f1e5829.png">
+Elegiremos cómo queremos autenticarnos en esa base de datos, yo pondré que solo se requiera la contraseña.
 <img src="https://user-images.githubusercontent.com/76048388/207182144-c32378a9-3c9b-4575-8eb5-43b37998be1b.png">
+Por último, le echaremos un vistazo a la sección de "Costos mensuales estimados" y si estamos conformes crearemos la base de datos.
 <img src="https://user-images.githubusercontent.com/76048388/207182179-81c7651a-9f9f-4eaf-935d-f9780952f851.png">
 
+<a name="apache"></a>
 <h3>Instalación del servidor web Apache</h3>
-<img src="https://user-images.githubusercontent.com/76048388/207461955-f9b06c6d-cfe6-43d9-bb8f-1758d57cf365.png">
+Iremos al panel de EC2 y echaremos un vistazo a las instancias que están activas. Elegimos la que queremos, que en mi caso es la única que hay, y clicamos arriba en "Conectar".
+<img src="https://user-images.githubusercontent.com/76048388/207570248-b47131c2-53e4-4aab-9649-53a25f72c587.png">
+
+Saldrá la información para acceder por SSH y sus instrucciones. Copiaremos el comando del final y lo usaremos en Ubuntu, en una carpeta donde tengamos metida la clave .pem que descargamos antes. Este comando indica que queremos acceder por SSH con el fichero "servidor-web-proyecto.pem" mediante el usuario root a la dirección asignada a continuación. Esta dirección puede ser IP o DNS. En lugar de acceder al root, es recomendable acceder al ec2-user por seguridad, que es el usuario con poderes sudo que hay en la instancia. 
 <img src="https://user-images.githubusercontent.com/76048388/207462154-b845ce2b-c664-4aef-990f-3d3a3b90608e.png">
+Una vez ejectuado ese comando, veremos cómo ya estamos dentro de la instancia EC2.
 <img src="https://user-images.githubusercontent.com/76048388/207462367-e7a19ffe-7d61-4572-9a42-de33737091d7.png">
+
+A continuación procederemos a instalar Apache y sus dependencias. En primer lugar, actualizaremos los repositorios.
   <pre><code>sudo yum update -y</code></pre>
+  Instalaremos los paquetes php8.0 y mariadb10.5.
   <pre><code>sudo amazon-linux-extras install php8.0 mariadb10.5</code></pre>
+  Instalaremos el paquete apache, el cuál aquí se llamará <b>httpd</b>.
   <pre><code>sudo yum install -y httpd</code></pre>
-  <pre><code>sudo systemctl start httpd</code></pre>  
+  Iniciaremos el servidor web.
+  <pre><code>sudo systemctl start httpd</code></pre> 
+  Haremos que el servidor web se inicie cada vez que se encienda la instancia.
   <pre><code>sudo systemctl enable httpd</code></pre>  
+  Posteriormente, y crearemos el grupo <b>apache</b> y meteremos al usuario <b>ec2-user</b>.
   <pre><code>sudo usermod -a -G apache ec2-user</code></pre>  
-  <pre><code>exit</code></pre>  
+  Nos aseguraremos de que este grupo ahora existe.
   <pre><code>[ec2-user@ip-*-*-*-* ~]$ groups
-ec2-user adm wheel apache systemd-journal</code></pre>  
+ec2-user adm wheel apache systemd-journal</code></pre>
+Ahora, haremos que la carpeta <b>/var/www</b>, que es donde se guarda el contenido a mostrar en el servidor web, sea propiedad del usuario <b>ec2-user</b> y del grupo <b>apache</b>.
   <pre><code>sudo chown -R ec2-user:apache /var/www</code></pre>  
-  <pre><code>sudo chmod 2775 /var/www</code></pre>  
-  <pre><code>find /var/www -type d -exec sudo chmod 2775 {} \;</code></pre>  
+  Le cambiaremos los permisos a <b>/var/www</b> para añadir permisos de escritura de grupo y establecer el ID de grupo en los subdirectorios que se creen en el futuro.
+  <pre><code>sudo chmod 2775 /var/www
+  find /var/www -type d -exec sudo chmod 2775 {} \;</code></pre>  
+  Este comando cambiará recursivamente los permisos de los archivos del directorio <b>/var/www</b> y sus subdirectorios para añadir permisos de escritura de grupo.
   <pre><code>find /var/www -type f -exec sudo chmod 0664 {} \;</code></pre>  
+  Con los comandos anteriores, hemos hecho que solamente los miembros del grupo <b>apache</b>, como <b>ec2-user</b>, puedan añadir, eliminar y editar archivos en la raíz de documentos de Apache para poder agregar contenido como esta página web.
+  
+  Ahora nos moveremos a <b>/var/www</b>, crearemos un directorio llamado <b>inc</b> y nos moveremos a él.
   <pre><code>cd /var/www
 mkdir inc
 cd inc</code></pre>  
+Dentro de esta carpeta crearé un archivo llamado <b>dbinfo.inc</b>
   <pre><code>nano dbinfo.inc</code></pre>  
+Aquí irá el siguiente contenido, que indica el punto de enlace de la base de datos (su IP o DNS), el nombre de usuario, su contraseña y la base de datos en cuestión. 
   <img src="https://user-images.githubusercontent.com/76048388/207463470-2f1b4a2e-86ca-4e41-b1ee-0f581938f35f.png">
-  
+  Para saber el punto de enlace, iremos al panel de RDS, seleccionaremos la instancia de base de datos, y allí podremos verlo.
+  <img src="https://user-images.githubusercontent.com/76048388/207576418-8c0b32b6-fb7a-42be-818a-b6787c4bd213.png">
+
+Para poder tener la página web que ya tengo programada en la instancia, voy a clonar el contenido de este mismo repositorio. Para eso en primer lugar instalaré el comando git, que me permitirá clonar repositorios pero también hacer cambios en repositorios a los que tenga acceso.
   <pre><code>sudo yum install git</code></pre>  
+  Me moveré a <b>/var/www/html</b>, donde irá el contenido que va a desplegar el servidor web.
+  <pre><code>cd /var/www/html</code></pre>
+  Una vez esté allí, clonaré el repositorio.
   <pre><code>git clone https://github.com/AndreaOsma/ProyectoASIR</code></pre>  
   
+  Como podemos comprobar en la siguiente imagen, al listar el contenido del directorio veremos que ahora está clonado el repositorio en nuestra instancia.
   <img src="https://user-images.githubusercontent.com/76048388/207464402-f3521711-9b45-4ac0-8197-3aa5b7c1f078.png">
 
+Como quiero que el contenido esté en la carpeta <b>/var/www/html</b>, moveré todo el contenido de <b>ProyectoASIR/proyecto/foro</b> al directorio actual, que es el <b>/var/www/html</b>, y una vez hecho borraré la carpeta ya que ya no la necesito más.
   <pre><code>mv ProyectoASIR/proyecto/foro/* ./
   rm -r ProyectoASIR/</code></pre>  
   
+  Si listamos veremos que ahora estaré todo el contenido en <b>/var/www/html</b>
   <img src="https://user-images.githubusercontent.com/76048388/207464639-32df1a13-74c8-46e1-b1b1-1bdb89b80854.png">
 
+Si ahora vamos a la página web mediante su DNS o IP veremos que sale un error de que no se ha podido establecer una conexión con la base de datos. Ese error es el que yo he metido en el fichero <b>connect.php</b> para que muestre si no ha podido establecer una conexión con la base de datos.
   <img src="https://user-images.githubusercontent.com/76048388/207464829-278e1f51-88c9-473c-8e0f-eadd94c8229b.png">
-
+Para solucionarlo, dentro de <b>connect.php</b> hay que poner los mismos parámetros que en <b>dbinfo.inc</b>, es decir: el punto de enlace, el usuario, la contraseña y la base de datos.
   <img src="https://user-images.githubusercontent.com/76048388/207468498-99bd168d-5c4d-4831-b376-da7382d8a883.png">
   
+  <a name="contenido"></a>
   <h3>Añadiendo contenido a la base de datos</h3>
   
-  <pre><code>yum install mariadb</code></pre>  
-  <pre><code>mysql --version</code></pre>  
+  Ahora hay que crear la base de datos en el servidor MySQL y las tablas de usuarios, categorías, temas y posts. Como ya hemos instalado antes MariaDB, vamos a acceder al servidor mediante el siguiente comando, donde indicaremos detrás del -h el punto de enlace, detrás del -P el puerto y detrás del -u el usuario. El -p es para que nos pida la contraseña al ejecutarlo.
   
+  <pre><code>mysql -h <puntodeenlace> -P 3306 -u <usuario> -p</code></pre>
+  
+  Como podemos ver en la siguiente imagen, la conexión se ha realizado con éxito.
   <img src="https://user-images.githubusercontent.com/76048388/207466191-3d09d6d3-ae84-45ee-8df8-84f87d499e22.png">
 
+No estamos dentro de ninguna base de datos, por lo que mostraremos las bases de datos que actualmente existen.
   <img src="https://user-images.githubusercontent.com/76048388/207466437-90ff75af-cca0-470d-9820-08742cc4f576.png">
+  
+Crearemos la base de datos foro, y mostraremos de nuevo las bases de datos existentes para comprobar que se ha creado con éxito.  
 <img src="https://user-images.githubusercontent.com/76048388/207466517-4a605c74-201f-48d3-a137-d4168d0fdd2f.png">
+
+Le indicaremos a MySQL que queremos usar la base de datos <b>foro</b>.
 <img src="https://user-images.githubusercontent.com/76048388/207466572-0b8fbdfd-0e5b-4558-81ff-3bf2372a421d.png">
+
+Una vez dentro de la base de datos, crearemos las tablas de usuarios, categorías, temas y posts y haremos los alter table.
 <img src="https://user-images.githubusercontent.com/76048388/207466706-bc40d66f-5c9d-47fd-a899-8ad664b49689.png">
 <img src="https://user-images.githubusercontent.com/76048388/207466740-b42cc4d1-9a0e-481c-9958-0bafe4a9acec.png">
 <img src="https://user-images.githubusercontent.com/76048388/207466847-1ff5b6f9-1f0c-4859-897d-67eaa6741ec1.png">
+
+Por último, mostraremos las tablas existentes para comprobar que estén creadas.
 <img src="https://user-images.githubusercontent.com/76048388/207467023-8b5e6902-fb2f-4620-a83e-bf6c45a5eacd.png">
 
-<img src="https://user-images.githubusercontent.com/76048388/207469031-0330307e-1d5f-4ca4-8c29-5ad9f8e31ba9.png">
+Cuando ya podamos acceder a la página web y hacer un registro, si queremos que un usuario tenga permisos de administrador para poder crear categorías, entraremos en la base de datos del foro y haremos un update, donde cambiaremos el nivel de usuario a 1 al usuario cuyo nombre de usuario sea el que queremos cambiar. También se puede usar el código de usuario ya que es una condición también única.
+  <img src="https://user-images.githubusercontent.com/76048388/207469031-0330307e-1d5f-4ca4-8c29-5ad9f8e31ba9.png">
   
+  <a name="funcionamiento"></a>
   <h3>Prueba de funcionamiento</h3>
+  Ahora podremos acceder a la página web y ejecutarla con normalidad, como accedíamos en local.
   <img src="https://user-images.githubusercontent.com/76048388/207477807-3fe91b67-3d6b-40cf-87d4-5a56b0d89b84.png">
+  Podremos registrar usuarios e iniciar sesión con ellos, al igual que en local.
 <img src="https://user-images.githubusercontent.com/76048388/207477912-e4babd8a-4923-4e43-b663-f82b27cad1a8.png">
+
+Podremos crear categorías, temas, respuestas... y verlos desplegados al igual que en local.
 <img src="https://user-images.githubusercontent.com/76048388/207478011-cea6659b-5fa4-4043-a058-8479c39772ec.png">
 
-  
-# Configurando Terraform para crear máquina de Kubernetes
-Para esta sección utilizaré Ubuntu 22.04 en modo Terminal.
-En primer lugar utilizaremos estos comandos para guardar el repositorio en el que está Terraform y actualizar la lista de repositorios.
-<pre><code>wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
-echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-sudo apt update && sudo apt install terraform</code></pre>
-Después instalaremos Terraform mediante el comando:
-<pre><code>sudo apt-get install terraform</code></pre>
+<a name="https"></a>
+<h3>Activación de HTTPS</h3>
+En este punto la página web es perfectamente funcional, pero solamente se puede acceder mediante el protocolo HTTP, si intentamos acceder por HTTPS nos saldrá un error de que no se ha podido establecer la conexión. Para poder acceder también por HTTPS, vamos a activar SSL/TLS, que es un protocolo que crea un canal encriptado entre el servidor web y el cliente web para proteger los datos enviados por de poder ser interceptados por terceros.
+En primer lugar, nos conectaremos a la instancia y confirmaremos que Apache está activado.
+<pre><code>sudo systemctl is-enabled httpd</code></pre>
+Actualizaremos los repositorios:
+<pre><code>sudo yum update -y</code></pre>
 
-Verificaremos que está bien instalado:
-<pre><code>terraform -help
-Usage: terraform [global options] <subcommand> [args]
+Instalaremos ahora el paquete <b>mod_ssl</b>, que es un módulo de Apache que añade soporte a TLS.
+<pre><code>sudo yum install -y mod_ssl</code></pre>
 
-The available commands for execution are listed below.
-The primary workflow commands are given first, followed by
-less common or more advanced commands.
-
-Main commands:
-  init          Prepare your working directory for other commands
-  validate      Check whether the configuration is valid
-  plan          Show changes required by the current configuration
-  apply         Create or update infrastructure
-  destroy       Destroy previously-created infrastructure
-  </pre></code>
-
-A partir de este punto, podríamos configurarlo para usar la nube de nuestra elección, yo elegiré AWS, de la cual ya tengo una cuenta creada.
-
-Instalamos la CLI de AWS:
+Nos moveremos a <b>/etc/pki/tls/certs</b> y ejecutaré el fichero <b>make-dummy-cert</b> con el parámetro del archivo donde quiero que me cree el certificado SSL. El contenido del archivo será un certificado autofirmado y la clave privada del certificado.
 <pre><code>
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
+cd /etc/pki/tls/certs
+sudo ./make-dummy-cert localhost.crt
 </code></pre>
 
-Iniciaremos sesión en la web de AWS, donde tendremos que pulsar en nuestro nombre de usuario y posteriormente en credenciales de seguridad.
-<br/>
-<img src="https://user-images.githubusercontent.com/76048388/206243145-495e151b-17db-4b9e-a00b-749e64f1e661.png">
+Entraremos en el archivo <b>/etc/httpd/conf.d/ssl.conf</b> con un editor de texto y nos aseguraremos de que la siguiente línea está descomentada.
+<pre><code>SSLCertificateKeyFile /etc/pki/tls/private/localhost.key</code></pre>
 
-Dentro pulsaremos en "Claves de acceso" y le daremos a "Crear una clave de acceso".
-<img src="https://user-images.githubusercontent.com/76048388/206243625-4ea0c9ce-a916-405c-a434-72661ecf132e.png">
+Por último, reiniciaremos Apache.
+<pre><code>sudo systemctl restart httpd</code></pre>
 
-Descargaremos el archivo de claves. Estas son las claves de acceso del usuario raíz, y no se deben compartir con nadie que no se quiera que tenga acceso a nuestra cuenta de AWS ya que puede tener objetivos maliciosos.
-<img src="https://user-images.githubusercontent.com/76048388/206243742-043d7416-5caf-4b8a-abd4-91af80a18484.png">
+Finalmente, podremos acceder a la página mediante el protocolo HTTPS, saldrá que no es seguro, pero se podrá acceder.
+<img src="https://user-images.githubusercontent.com/76048388/207589569-9e7894f9-7a43-4992-a58c-72b465dc0342.png">
 
-Volveremos a la terminal de Ubuntu, donde definiremos dos variables de entorno.
+Para evitar que saliese el mensaje "No seguro", habría que crear una petición de certificación y enviarle ese archivo a una autoridad de certificación, que son empresas que comprueban ese archivo, si le dan el visto bueno te enviarían un certificado firmado y finalmente se configuraría Apache para usar ese certificado. También existe la opción de configurar un DNS, para en lugar de acceder mediante la IP del servidor o la DNS "https://ec2-*-*-*-*.eu-south-2.compute.amazonaws.com", acceder mediante una DNS legible y fácil de recordar como podría ser "proyectoasirandrea.com". Para eso tendríamos que comprar un dominio, que mismamente en AWS se puede comprar en el panel de <b>Route 53</b>, o en otras empresas que ofrecen estos servicios. Podríamos comprar el DNS que quisiéramos y estuviera disponible, con un precio que depende del subdominio (por ejemplo <b>.com</b> son 12$ al año) y crear una zona alojada por ese dominio, la cual sería la DNS de nuestra instancia.
+<img src="https://user-images.githubusercontent.com/76048388/207591358-41c44b25-9fa0-4155-a4a7-c6c9e2d8dc59.png">
 
-<pre><code>
-export AWS_ACCESS_KEY_ID=tuiddeacceso
-export AWS_SECRET_ACCESS_KEY=tucontraseñadeacceso
-</code></pre>
+Yo no voy a hacer ninguna de las dos opciones, ya que los objetivos del proyecto son puramente académicos, pero existen las dos opciones. En la bibliografía dejaré más información sobre ello.
 
-Crearemos una carpeta para la instancia de Terraform y nos moveremos a esa carpeta.
-<pre><code>
-mkdir terraform-aws-instance
-cd terraform-aws-instance
-</code></pre>
-
-Crearemos un archivo para la configuración de AWS.
-<pre><code>touch main.tf</code></pre>
-
-Abriremos el archivo con un editor de texto, como por ejemplo nano, e introduciremos el siguiente código. El bloque "Terraform" tendrá la configuración de Terraform. El bloque "provider" define el proveedor que utilizaremos, en este caso Terraform. La región es la ubicación donde está el servidor que utilizaremos, ya que Amazon tiene servidores por todo el mundo. Esto determinará los precios y la latencia a la hora de acceder. El bloque "resource" definirá la infraestructura que usaremos, primero vendrá el tipo de instancia y después el nombre, que en mi caso es "server_proyecto". El AMI es el ID de la imagen de máquina que se utilizará, la que usaré será de Ubuntu 22.04. Por último, en instance_type viene el tipo de instancia, y en este caso usaremos t2.micro ya que este califica para el tier gratis de Amazon.
-<pre><code>terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 4.16"
-    }
-  }
-
-  required_version = ">= 1.2.0"
-}
-
-provider "aws" {
-  region  = "eu-west-1"
-}
-
-resource "aws_instance" "server_proyecto" {
-  ami           = "ami-05e786af422f8082a"
-  instance_type = "t2.micro"
-
-  tags = {
-    Name = "InstanciaProyecto"
-  }
-}
-</code></pre>
-
-Una vez configurado el archivo, lo guardaremos y ejecutaremos el siguiente comando para inicializar Terraform.
-
-<pre><code>terraform init</code></pre>
-
-Para validar el archivo de configuración podremos utilizar el siguiente comando.
-<pre><code>terraform validate</code></pre>
-
-Aplicaremos la configuración con el siguiente comando:
-<pre><code>terraform apply</code></pre>
-
-Saldrá una lista con todos los archivos que se van a añadir, y al final nos preguntará si queremos que se lleven a cabo esas acciones. Cuando aceptemos se empezará a crear la instancia.
-<img src="https://user-images.githubusercontent.com/76048388/206249354-c82a44c3-9c2b-41ac-a92f-56e32c406f44.png">
-
-Para ver el estado de la instancia podemos ejecutar el siguiente comando.
-<pre><code>terraform show</code></pre>
-
-Si quisiéramos destruir la instancia una vez finalizado el uso, para evitar costes extra o posibles riesgos, usaríamos el siguiente comando:
-<pre><code>terraform destroy</code></pre>
-
-# Configurando Kubernetes
-En esta parte es donde Terraform podrá de ser de mayor ayuda, ya que Kubernetes (EKS en AWS) cuesta unos $0.10 por hora, y la mayor ventaja que tiene Terraform es poder destruir la instancia en cualquier momento, y así no incurrir en gastos extra.
-Para instalar la CLI de Kubernetes en Ubuntu, usaré estos comandos:
-<pre><code>
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-</code></pre>
-También necesitaremos AWS IAM Authenticator:
-<pre><code>
-curl -Lo aws-iam-authenticator https://github.com/kubernetes-sigs/aws-iam-authenticator/releases/download/v0.5.9/aws-iam-authenticator_0.5.9_linux_amd64
-chmod +x ./aws-iam-authenticator
-mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$PATH:$HOME/bin
-echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
-</code></pre>
-
-Copiaremos el siguiente repositorio:
-<pre><code>git clone https://github.com/hashicorp/learn-terraform-provision-eks-cluster</code></pre>
-
-Nos moveremos al repositorio:
-<pre><code>cd learn-terraform-provision-eks-cluster</code></pre>
-
-Al listar veremos que dentro hay varios archivos:
-<img src="https://user-images.githubusercontent.com/76048388/206292640-19471772-352e-4c19-8a51-d5ff9c938734.png">
-
-El archivo <b>variables.tf</b> sirve para definir las variables, como por ejemplo la región. Si hacemos un cat del archivo, nos saldrá este contenido, que podremos ajustar al que necesitemos.
-<pre><code>variable "region" {
-  description = "AWS region"
-  type        = string
-  default     = "eu-west-1"
-}
-</code></pre>
-
-El archivo <b>vpc.tf</b> contiene el VPC, las subredes, las zonas de disponibilidad, etcétera.
-<pre><code>module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "3.14.2"
-
-  name = "education-vpc"
-
-  cidr = "10.0.0.0/16"
-  azs  = slice(data.aws_availability_zones.available.names, 0, 3)
-
-  private_subnets = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  public_subnets  = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
-
-  enable_nat_gateway   = true
-  single_nat_gateway   = true
-  enable_dns_hostnames = true
-
-  public_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                      = 1
-  }
-
-  private_subnet_tags = {
-    "kubernetes.io/cluster/${local.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"             = 1
-  }
-}
-</code></pre>
-
-En el archivo <b>terraform.tf</b> veremos los proveedores requeridos para Kubernetes y sus versiones.
-<pre><code>terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 4.15.0"
-    }
-
-    random = {
-      source  = "hashicorp/random"
-      version = "~> 3.1.0"
-    }
-
-    tls = {
-      source  = "hashicorp/tls"
-      version = "~> 3.4.0"
-    }
-
-    cloudinit = {
-      source  = "hashicorp/cloudinit"
-      version = "~> 2.2.0"
-    }
-
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "~> 2.12.1"
-    }
-  }
-
-  required_version = "~> 1.3"
-}</code></pre>
-
-En el archivo security-groups.tf podremos definir los grupos de seguridad a modo de firewall.
-<pre><code>resource "aws_security_group" "node_group_one" {
-  name_prefix = "node_group_one"
-  vpc_id      = module.vpc.vpc_id
-
-  ingress {
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
-
-    cidr_blocks = [
-      "10.0.0.0/8",
-    ]
-  }
-}
-
-resource "aws_security_group" "node_group_two" {
-  name_prefix = "node_group_two"
-  vpc_id      = module.vpc.vpc_id
-
-  ingress {
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
-
-    cidr_blocks = [
-      "192.168.0.0/16",
-    ]
-  }
-}</code></pre>
-
-En el archivo <b>outputs.tf</b> aparecerán las salidas que se obtendrán al terminar de iniciar el Terraform.
-
-<pre><code>output "cluster_id" {
-  description = "EKS cluster ID"
-  value       = module.eks.cluster_id
-}
-
-output "cluster_endpoint" {
-  description = "Endpoint for EKS control plane"
-  value       = module.eks.cluster_endpoint
-}
-
-output "cluster_security_group_id" {
-  description = "Security group ids attached to the cluster control plane"
-  value       = module.eks.cluster_security_group_id
-}
-
-output "region" {
-  description = "AWS region"
-  value       = var.region
-}
-
-output "cluster_name" {
-  description = "Kubernetes Cluster Name"
-  value       = local.cluster_name
-}</code></pre>
-
-Por último, en el archivo <b>eks-cluster</b> tenemos las configuraciones relativas al EKS. Lo he ajustado a t2.micro ya que haré el mínimo uso.
-<pre><code>module "eks" {
-  source  = "terraform-aws-modules/eks/aws"
-  version = "18.26.6"
-
-  cluster_name    = local.cluster_name
-  cluster_version = "1.22"
-
-  vpc_id     = module.vpc.vpc_id
-  subnet_ids = module.vpc.private_subnets
-
-  eks_managed_node_group_defaults = {
-    ami_type = "AL2_x86_64"
-
-    attach_cluster_primary_security_group = true
-
-    # Disabling and using externally provided security groups
-    create_security_group = false
-  }
-
-  eks_managed_node_groups = {
-    one = {
-      name = "node-group-1"
-
-      instance_types = ["t2.micro"]
-
-      min_size     = 1
-      max_size     = 3
-      desired_size = 2
-
-      pre_bootstrap_user_data = <<-EOT
-      echo 'foo bar'
-      EOT
-
-      vpc_security_group_ids = [
-        aws_security_group.node_group_one.id
-      ]
-    }
-
-    two = {
-      name = "node-group-2"
-
-      instance_types = ["t2.micro"]
-
-      min_size     = 1
-      max_size     = 2
-      desired_size = 1
-
-      pre_bootstrap_user_data = <<-EOT
-      echo 'foo bar'
-      EOT
-
-      vpc_security_group_ids = [
-        aws_security_group.node_group_two.id
-      ]
-    }
-  }
-}
-</code></pre>
-
-Una vez configurados todos los archivos, iniciaremos Terraform mediante el siguiente comando:
-<pre><code>terraform init</code></pre>
-
-Una vez creado, podremos ver que está activo mediante la consola.
-<img src="https://user-images.githubusercontent.com/76048388/206270144-f7001f7b-bcd2-4a75-bf7d-55b1c64154d3.png">
-
+<a name="conclusion"></a>
 # Conclusión del proyecto
-Como conclusión, queda claro que mediante PHP y mySQL no es difícil hacer un foro básico, y mediante otras herramientas como AWS o cualquier otro hosting en la nube ya no es necesario hostearlo en una máquina física.
+Como conclusión, queda claro que mediante PHP y mySQL no es difícil hacer un foro básico, y mediante otras herramientas como AWS o cualquier otro hosting en la nube ya no es necesario hostearlo en una máquina física. Gracias a esto, aseguro que la página web siempre esté accesible, sin peligros como cortes de luz o peligro de que se comprometa el hardware.
 
+<a name="glosario"></a>
+# Glosario
+
+<a name="bibliografia"></a>
 # Bibliografía
 <ul>
   <li>https://www.apachefriends.org/es/index.html</li>
-  <li>https://openwebinars.net/blog/por-que-usar-terraform/</li>
   <li>https://code.tutsplus.com/es/tutorials/how-to-create-a-phpmysql-powered-forum-from-scratch--net-10188</li>
   <li>https://developer.hashicorp.com/terraform/tutorials/aws-get-started</li>
-  <li>https://developer.hashicorp.com/terraform/tutorials/kubernetes/eks</li>
   <li>https://rm-rf.es/como-conectar-ssh-instancia-aws-ec2-linux/#:~:text=C%C3%B3mo%20conectar%20por%20SSH%20a%20una%20instancia%20AWS,de%20instancia%2C%20IP%20y%20su%20DNS%20p%C3%BAblico%20</li>
-  <li>https://developer.hashicorp.com/terraform/tutorials/kubernetes/kubernetes-provider</li>
-  <li>https://docs.aws.amazon.com/es_es/AmazonRDS/latest/UserGuide/TUT_WebAppWithRDS.html
-  https://aws.amazon.com/es/getting-started/hands-on/deploy-wordpress-with-amazon-rds/4/</li>
+  <li>https://docs.aws.amazon.com/es_es/AmazonRDS/latest/UserGuide/TUT_WebAppWithRDS.html</li>
+  <li>https://aws.amazon.com/es/getting-started/hands-on/deploy-wordpress-with-amazon-rds</li>
+  <li>https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/SSL-on-amazon-linux-2.html</li>
+  <li>https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/Welcome.html</li>
 </ul>
 
-# Autoría
-<p>Este proyecto ha sido creado por Andrea Osma Rafael, como proyecto de fin de grado del Grado Superior de Administración de Sistemas Informáticos en Red terminado en el año 2022.</p>
-
 # Licencia
-<p xmlns:cc="http://creativecommons.org/ns#" xmlns:dct="http://purl.org/dc/terms/"><a property="dct:title" rel="cc:attributionURL" href="https://github.com/Andify28/ProyectoASIR">Red empresarial en AWS - Proyecto de fin de grado de ASIR</a> by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://github.com/Andify28">Andrea Osma Rafael</a> is licensed under <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-NC-SA 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/nc.svg?ref=chooser-v1"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1"></a></p>
+<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Licencia Creative Commons" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">Implantación de foro en AWS</span> por <a xmlns:cc="http://creativecommons.org/ns#" href="https://github.com/AndreaOsma" property="cc:attributionName" rel="cc:attributionURL">Andrea Osma Rafael</a> se distribuye bajo una <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Licencia Creative Commons Atribución-NoComercial 4.0 Internacional</a>.<br />Basada en una obra en <a xmlns:dct="http://purl.org/dc/terms/" href="https://github.com/AndreaOsma/ProyectoASIR" rel="dct:source">https://github.com/AndreaOsma/ProyectoASIR</a>
 
 <a href="#top">Volver al inicio</a>
