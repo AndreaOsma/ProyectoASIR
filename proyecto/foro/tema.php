@@ -26,7 +26,8 @@ if(!$result)
 }
 else
 {
-                echo '<table border="1">
+                echo '<div id="tablatema">
+                <table border="1">
                       <tr>
                         <th>Contenido</th><th>Fecha y autor</th>
                       </tr>'; 
@@ -42,13 +43,20 @@ else
                         echo '</td>';
                     echo '</tr>';
                 }
+
+    echo '</div>';
             }
 
-echo '<h3>Escribe aquí tu respuesta</h3>
-    <form method="post" action="respuesta.php?cod_tema='.$_GET["cod_tema"].'">
-    <textarea name="texto-post"></textarea>
-    <input type="submit" value="Responder" />
-</form>';
+ echo '
+ <div id="respuesta">
+ <h3>Escribe aquí tu respuesta</h3>
+ <form method="post" action="respuesta.php?cod_tema='.$_GET["cod_tema"].'">
+ <textarea name="texto-post"></textarea>
+ <input type="submit" value="Responder" />
+  </form>
+ </div> 
+  ';
+
          
 include 'footer.php';
 ?>

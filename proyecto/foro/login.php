@@ -13,9 +13,9 @@ else
     if($_SERVER['REQUEST_METHOD'] != 'POST')
     {
         echo '<form method="post" action="">
-            Username: <input type="text" name="nombre_usu" />
-            Password: <input type="password" name="pass_usu">
-            <input type="submit" value="Sign in" />
+            Nombre de usuario: <input type="text" name="nombre_usu" />
+            Contraseña: <input type="password" name="pass_usu">
+            <input type="submit" value="Iniciar sesión" />
          </form>';
     }
     else

@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/estilo.css" type="text/css">
 </head>
 <body>
-<a href="index.php"><h1>Mi foro</h1></a>
+<a href="index.php"><h1>Foro para el proyecto de 2º de ASIR</h1></a>
     <div id="wrapper">
     <div id="menu">
         <a class="item" href="index.php">Inicio</a> -
@@ -33,4 +33,4 @@ $sesion_iniciada=$_SESSION['sesion_iniciada']   ?? null;
 ?>
 </div>
     </div>
-        <div id="content">
+        <div id="contenido">
