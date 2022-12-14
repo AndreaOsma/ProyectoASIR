@@ -2,7 +2,7 @@
 $error = false;
 if($error = false)
 {
-    echo '<div id="content">Error</div>';
+    echo '<div id="contenido">Error</div>';
 }
 else
 {
