@@ -297,8 +297,10 @@ El código fuente lo podemos ver en este archivo del repositorio:
 
 <a name="aws"></a>
 # Creando el servidor web y la base de datos en AWS y desplegando el foro
-<h3>Despliegue de la instancia de EC2
+<h3>Despliegue de la instancia de EC2</h3>
+En primer lugar, hay que ir a <a>https://aws.amazon.com/es/</a>, donde crearemos una cuenta. Una vez creada, iremos a la sección dentro del panel llamada "Crear una solución". Allí elegiremos "Lance una página máquina virtual", que nos llevará a la consola de creación de EC2.
 <img src="https://user-images.githubusercontent.com/76048388/207176350-fe972fd5-6759-41d5-847b-11a4acc88e56.png">
+Una vez allí, en primer lugar le daremos un nombre a la máquina y en segundo lugar elegiremos un sistema operativo, pudiendo elegir Amazon Linux, Amazon Linux 2, Ubuntu, Windows Server, Red Hat, etcétera. En este caso elegiré Amazon Linux 2, con la arquitectura de 64 bits. Al lado de la arquitectura veremos que sale el ID de la AMI. Esta es la imagen utilizada para crear la máquina.
 <img src="https://user-images.githubusercontent.com/76048388/207460732-d4db2f08-837e-4f51-9345-cb960a36d0a2.png">
 <img src="https://user-images.githubusercontent.com/76048388/207180737-f53fa87e-3d62-435e-b9ab-8c39ef1f43a2.png">
 <img src="https://user-images.githubusercontent.com/76048388/207180762-17517dac-da89-42e3-8cd0-a91ba5b770ed.png">
@@ -374,12 +376,12 @@ cd inc</code></pre>
 <img src="https://user-images.githubusercontent.com/76048388/207469031-0330307e-1d5f-4ca4-8c29-5ad9f8e31ba9.png">
   
   <h3>Prueba de funcionamiento</h3>
-  <img src="https://user-images.githubusercontent.com/76048388/207469271-00a5dd54-1f16-451e-b6fe-56c9cb655988.png">
-<img src="https://user-images.githubusercontent.com/76048388/207469349-8eabfc45-c370-42f3-838d-7b1c2905092d.png">
-<img src="https://user-images.githubusercontent.com/76048388/207469387-0702bb71-2c90-41ba-a61f-7c0c6405618d.png">
+  <img src="https://user-images.githubusercontent.com/76048388/207477807-3fe91b67-3d6b-40cf-87d4-5a56b0d89b84.png">
+<img src="https://user-images.githubusercontent.com/76048388/207477912-e4babd8a-4923-4e43-b663-f82b27cad1a8.png">
+<img src="https://user-images.githubusercontent.com/76048388/207478011-cea6659b-5fa4-4043-a058-8479c39772ec.png">
 
   
-# Configurando Terraform
+# Configurando Terraform para crear máquina de Kubernetes
 Para esta sección utilizaré Ubuntu 22.04 en modo Terminal.
 En primer lugar utilizaremos estos comandos para guardar el repositorio en el que está Terraform y actualizar la lista de repositorios.
 <pre><code>wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
