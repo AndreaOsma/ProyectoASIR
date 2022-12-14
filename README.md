@@ -298,32 +298,31 @@ El código fuente lo podemos ver en este archivo del repositorio:
 <a name="aws"></a>
 # Creando el servidor web y la base de datos en AWS y desplegando el foro
 <h3>Despliegue de la instancia de EC2
-![image](https://user-images.githubusercontent.com/76048388/207176350-fe972fd5-6759-41d5-847b-11a4acc88e56.png)
-![image](https://user-images.githubusercontent.com/76048388/207460732-d4db2f08-837e-4f51-9345-cb960a36d0a2.png)
-![image](https://user-images.githubusercontent.com/76048388/207180737-f53fa87e-3d62-435e-b9ab-8c39ef1f43a2.png)
-![image](https://user-images.githubusercontent.com/76048388/207180762-17517dac-da89-42e3-8cd0-a91ba5b770ed.png)
-![image](https://user-images.githubusercontent.com/76048388/207180861-460a0183-7037-493d-9c7f-7d90ec8a63b5.png)
-![image](https://user-images.githubusercontent.com/76048388/207180933-aee3d5d9-714e-41b0-9173-ace8fd1d9100.png)
-![image](https://user-images.githubusercontent.com/76048388/207461056-a194be2a-5ac3-4442-9bd5-96f67d6b6a9c.png)
+<img src="https://user-images.githubusercontent.com/76048388/207176350-fe972fd5-6759-41d5-847b-11a4acc88e56.png">
+<img src="https://user-images.githubusercontent.com/76048388/207460732-d4db2f08-837e-4f51-9345-cb960a36d0a2.png">
+<img src="https://user-images.githubusercontent.com/76048388/207180737-f53fa87e-3d62-435e-b9ab-8c39ef1f43a2.png">
+<img src="https://user-images.githubusercontent.com/76048388/207180762-17517dac-da89-42e3-8cd0-a91ba5b770ed.png">
+<img src="https://user-images.githubusercontent.com/76048388/207180861-460a0183-7037-493d-9c7f-7d90ec8a63b5.png">
+<img src="https://user-images.githubusercontent.com/76048388/207180933-aee3d5d9-714e-41b0-9173-ace8fd1d9100.png">
+<img src="https://user-images.githubusercontent.com/76048388/207461056-a194be2a-5ac3-4442-9bd5-96f67d6b6a9c.png">
 
 <h3>Despliegue del servidor de bases de datos</h3>
-![image](https://user-images.githubusercontent.com/76048388/207181202-6f01ef5a-08cf-4ebf-a891-53405e4033fc.png)
-![image](https://user-images.githubusercontent.com/76048388/207181299-ba2f8d7b-ca26-4f74-8eb0-e12653fa942e.png)
-![image](https://user-images.githubusercontent.com/76048388/207181397-78594edf-35bb-439a-b97a-4d6b64e876bc.png)
-![image](https://user-images.githubusercontent.com/76048388/207181584-d7af4508-de93-4898-8f47-8012170a27a0.png)
-![image](https://user-images.githubusercontent.com/76048388/207181727-baa40511-51d4-4c87-8aa5-af1ee1083f7a.png)
-![image](https://user-images.githubusercontent.com/76048388/207181776-22654200-1af9-4f6a-a179-b51ca8403d75.png)
-![image](https://user-images.githubusercontent.com/76048388/207181824-9caabd98-817a-421a-8818-b1cb0262a212.png)
-![image](https://user-images.githubusercontent.com/76048388/207182086-889b9d20-4483-43da-a5cb-9f37d88b1638.png)
-![image](https://user-images.githubusercontent.com/76048388/207182118-a44f1cb0-3ca1-486b-a60a-0a905f1e5829.png)
-![image](https://user-images.githubusercontent.com/76048388/207182144-c32378a9-3c9b-4575-8eb5-43b37998be1b.png)
-![image](https://user-images.githubusercontent.com/76048388/207182179-81c7651a-9f9f-4eaf-935d-f9780952f851.png)
+<img src="https://user-images.githubusercontent.com/76048388/207181202-6f01ef5a-08cf-4ebf-a891-53405e4033fc.png">
+<img src="https://user-images.githubusercontent.com/76048388/207181299-ba2f8d7b-ca26-4f74-8eb0-e12653fa942e.png">
+<img src="https://user-images.githubusercontent.com/76048388/207181397-78594edf-35bb-439a-b97a-4d6b64e876bc.png">
+<img src="https://user-images.githubusercontent.com/76048388/207181584-d7af4508-de93-4898-8f47-8012170a27a0.png">
+<img src="https://user-images.githubusercontent.com/76048388/207181727-baa40511-51d4-4c87-8aa5-af1ee1083f7a.png">
+<img src="https://user-images.githubusercontent.com/76048388/207181776-22654200-1af9-4f6a-a179-b51ca8403d75.png">
+<img src="https://user-images.githubusercontent.com/76048388/207181824-9caabd98-817a-421a-8818-b1cb0262a212.png">
+<img src="https://user-images.githubusercontent.com/76048388/207182086-889b9d20-4483-43da-a5cb-9f37d88b1638.png">
+<img src="https://user-images.githubusercontent.com/76048388/207182118-a44f1cb0-3ca1-486b-a60a-0a905f1e5829.png">
+<img src="https://user-images.githubusercontent.com/76048388/207182144-c32378a9-3c9b-4575-8eb5-43b37998be1b.png">
+<img src="https://user-images.githubusercontent.com/76048388/207182179-81c7651a-9f9f-4eaf-935d-f9780952f851.png">
 
 <h3>Instalación del servidor web Apache</h3>
-![image](https://user-images.githubusercontent.com/76048388/207461955-f9b06c6d-cfe6-43d9-bb8f-1758d57cf365.png)
-![image](https://user-images.githubusercontent.com/76048388/207462154-b845ce2b-c664-4aef-990f-3d3a3b90608e.png)
-![image](https://user-images.githubusercontent.com/76048388/207462367-e7a19ffe-7d61-4572-9a42-de33737091d7.png)
-
+<img src="https://user-images.githubusercontent.com/76048388/207461955-f9b06c6d-cfe6-43d9-bb8f-1758d57cf365.png">
+<img src="https://user-images.githubusercontent.com/76048388/207462154-b845ce2b-c664-4aef-990f-3d3a3b90608e.png">
+<img src="https://user-images.githubusercontent.com/76048388/207462367-e7a19ffe-7d61-4572-9a42-de33737091d7.png">
   <pre><code>sudo yum update -y</code></pre>
   <pre><code>sudo amazon-linux-extras install php8.0 mariadb10.5</code></pre>
   <pre><code>sudo yum install -y httpd</code></pre>
@@ -341,43 +340,43 @@ ec2-user adm wheel apache systemd-journal</code></pre>
 mkdir inc
 cd inc</code></pre>  
   <pre><code>nano dbinfo.inc</code></pre>  
-  ![image](https://user-images.githubusercontent.com/76048388/207463470-2f1b4a2e-86ca-4e41-b1ee-0f581938f35f.png)
+  <img src="https://user-images.githubusercontent.com/76048388/207463470-2f1b4a2e-86ca-4e41-b1ee-0f581938f35f.png">
   
   <pre><code>sudo yum install git</code></pre>  
   <pre><code>git clone https://github.com/AndreaOsma/ProyectoASIR</code></pre>  
   
-  ![image](https://user-images.githubusercontent.com/76048388/207464402-f3521711-9b45-4ac0-8197-3aa5b7c1f078.png)
+  <img src="https://user-images.githubusercontent.com/76048388/207464402-f3521711-9b45-4ac0-8197-3aa5b7c1f078.png">
 
   <pre><code>mv ProyectoASIR/proyecto/foro/* ./
   rm -r ProyectoASIR/</code></pre>  
   
-  ![image](https://user-images.githubusercontent.com/76048388/207464639-32df1a13-74c8-46e1-b1b1-1bdb89b80854.png)
+  <img src="https://user-images.githubusercontent.com/76048388/207464639-32df1a13-74c8-46e1-b1b1-1bdb89b80854.png">
 
-  ![image](https://user-images.githubusercontent.com/76048388/207464829-278e1f51-88c9-473c-8e0f-eadd94c8229b.png)
+  <img src="https://user-images.githubusercontent.com/76048388/207464829-278e1f51-88c9-473c-8e0f-eadd94c8229b.png">
 
-  ![image](https://user-images.githubusercontent.com/76048388/207468498-99bd168d-5c4d-4831-b376-da7382d8a883.png)
+  <img src="https://user-images.githubusercontent.com/76048388/207468498-99bd168d-5c4d-4831-b376-da7382d8a883.png">
   
   <h3>Añadiendo contenido a la base de datos</h3>
   
   <pre><code>yum install mariadb</code></pre>  
   <pre><code>mysql --version</code></pre>  
   
-  ![image](https://user-images.githubusercontent.com/76048388/207466191-3d09d6d3-ae84-45ee-8df8-84f87d499e22.png)
+  <img src="https://user-images.githubusercontent.com/76048388/207466191-3d09d6d3-ae84-45ee-8df8-84f87d499e22.png">
 
-  ![image](https://user-images.githubusercontent.com/76048388/207466437-90ff75af-cca0-470d-9820-08742cc4f576.png)
-![image](https://user-images.githubusercontent.com/76048388/207466517-4a605c74-201f-48d3-a137-d4168d0fdd2f.png)
-![image](https://user-images.githubusercontent.com/76048388/207466572-0b8fbdfd-0e5b-4558-81ff-3bf2372a421d.png)
-![image](https://user-images.githubusercontent.com/76048388/207466706-bc40d66f-5c9d-47fd-a899-8ad664b49689.png)
-![image](https://user-images.githubusercontent.com/76048388/207466740-b42cc4d1-9a0e-481c-9958-0bafe4a9acec.png)
-![image](https://user-images.githubusercontent.com/76048388/207466847-1ff5b6f9-1f0c-4859-897d-67eaa6741ec1.png)
-![image](https://user-images.githubusercontent.com/76048388/207467023-8b5e6902-fb2f-4620-a83e-bf6c45a5eacd.png)
+  <img src="https://user-images.githubusercontent.com/76048388/207466437-90ff75af-cca0-470d-9820-08742cc4f576.png">
+<img src="https://user-images.githubusercontent.com/76048388/207466517-4a605c74-201f-48d3-a137-d4168d0fdd2f.png">
+<img src="https://user-images.githubusercontent.com/76048388/207466572-0b8fbdfd-0e5b-4558-81ff-3bf2372a421d.png">
+<img src="https://user-images.githubusercontent.com/76048388/207466706-bc40d66f-5c9d-47fd-a899-8ad664b49689.png">
+<img src="https://user-images.githubusercontent.com/76048388/207466740-b42cc4d1-9a0e-481c-9958-0bafe4a9acec.png">
+<img src="https://user-images.githubusercontent.com/76048388/207466847-1ff5b6f9-1f0c-4859-897d-67eaa6741ec1.png">
+<img src="https://user-images.githubusercontent.com/76048388/207467023-8b5e6902-fb2f-4620-a83e-bf6c45a5eacd.png">
 
-![image](https://user-images.githubusercontent.com/76048388/207469031-0330307e-1d5f-4ca4-8c29-5ad9f8e31ba9.png)
+<img src="https://user-images.githubusercontent.com/76048388/207469031-0330307e-1d5f-4ca4-8c29-5ad9f8e31ba9.png">
   
   <h3>Prueba de funcionamiento</h3>
-  ![image](https://user-images.githubusercontent.com/76048388/207469271-00a5dd54-1f16-451e-b6fe-56c9cb655988.png)
-![image](https://user-images.githubusercontent.com/76048388/207469349-8eabfc45-c370-42f3-838d-7b1c2905092d.png)
-![image](https://user-images.githubusercontent.com/76048388/207469387-0702bb71-2c90-41ba-a61f-7c0c6405618d.png)
+  <img src="https://user-images.githubusercontent.com/76048388/207469271-00a5dd54-1f16-451e-b6fe-56c9cb655988.png">
+<img src="https://user-images.githubusercontent.com/76048388/207469349-8eabfc45-c370-42f3-838d-7b1c2905092d.png">
+<img src="https://user-images.githubusercontent.com/76048388/207469387-0702bb71-2c90-41ba-a61f-7c0c6405618d.png">
 
   
 # Configurando Terraform
@@ -701,32 +700,6 @@ Una vez configurados todos los archivos, iniciaremos Terraform mediante el sigui
 
 Una vez creado, podremos ver que está activo mediante la consola.
 <img src="https://user-images.githubusercontent.com/76048388/206270144-f7001f7b-bcd2-4a75-bf7d-55b1c64154d3.png">
-
-# Implantación del foro en un servidor Nginx
-Una vez sabiendo cómo se crea el clúster de Kubernetes, solamente queda habilitar el servidor web, para lo que utilizaremos Nginx, y el servidor mySQL.
-Crearé un archivo llamado <b>nginx.tf</b> que llevará dentro el módulo Nginx.
-<pre><code>
-module "eks-ingress-nginx" {
-  source  = "lablabs/eks-ingress-nginx/aws"
-  version = "1.2.0"
-}
-</code></pre>
-
-# Acceder por SSH
-Una vez realizada la configuración, habremos creado un servidor, que actuará como cualquier otra máquina en la que hubiéramos instalado Ubuntu Server 22.04.
-Querremos acceder por SSH, para ello tenemos primero que configurar la CLI de AWS con el siguiente comando. Pedirá las claves de acceso que generamos anteriormente.
-<pre><code>aws configure</code></pre>
-Ahora tenemos que crear un keypair en la CLI de AWS con el siguiente comando. Esto generará una clave pública y una privada.
-<pre><code>aws ec2 create-key-pair --key-name ElNombreQueQueramos</code></pre>
-
-Copiaremos el contenido de "KeyMaterial" a un archivo vacío en la ruta que queramos, lo normal es guardarlo en la carpeta ~/.ssh.
-
-Nos aseguraremos de la IP pública o del DNS público de la instancia de AWS mediante uno de los siguientes comandos:
-<pre><code>terraform show | grep public_dns
-terraform show | grep public_ip</code></pre>
-
-Copiaremos ese DNS o IP y para acceder por SSH usaremos el siguiente comando:
-<pre><code>ssh -i RutaClavePrivada ec2-user@ec2-34-*-*-*.eu-west-1.compute.amazonaws.com</code></pre>
 
 # Conclusión del proyecto
 Como conclusión, queda claro que mediante PHP y mySQL no es difícil hacer un foro básico, y mediante otras herramientas como AWS o cualquier otro hosting en la nube ya no es necesario hostearlo en una máquina física.
