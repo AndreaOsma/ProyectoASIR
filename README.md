@@ -299,12 +299,12 @@ El código fuente lo podemos ver en este archivo del repositorio:
 # Creando el servidor web y la base de datos en AWS y desplegando el foro
 <h3>Despliegue de la instancia de EC2
 ![image](https://user-images.githubusercontent.com/76048388/207176350-fe972fd5-6759-41d5-847b-11a4acc88e56.png)
-![image](https://user-images.githubusercontent.com/76048388/207180664-2d9f2bb2-f23c-43cc-9ff9-8d93c104d477.png)
+![image](https://user-images.githubusercontent.com/76048388/207460732-d4db2f08-837e-4f51-9345-cb960a36d0a2.png)
 ![image](https://user-images.githubusercontent.com/76048388/207180737-f53fa87e-3d62-435e-b9ab-8c39ef1f43a2.png)
 ![image](https://user-images.githubusercontent.com/76048388/207180762-17517dac-da89-42e3-8cd0-a91ba5b770ed.png)
 ![image](https://user-images.githubusercontent.com/76048388/207180861-460a0183-7037-493d-9c7f-7d90ec8a63b5.png)
 ![image](https://user-images.githubusercontent.com/76048388/207180933-aee3d5d9-714e-41b0-9173-ace8fd1d9100.png)
-![image](https://user-images.githubusercontent.com/76048388/207181143-d8e1481a-4f1e-40da-9e57-1e6cab5aaf44.png)
+![image](https://user-images.githubusercontent.com/76048388/207461056-a194be2a-5ac3-4442-9bd5-96f67d6b6a9c.png)
 
 <h3>Despliegue del servidor de bases de datos</h3>
 ![image](https://user-images.githubusercontent.com/76048388/207181202-6f01ef5a-08cf-4ebf-a891-53405e4033fc.png)
@@ -320,56 +320,66 @@ El código fuente lo podemos ver en este archivo del repositorio:
 ![image](https://user-images.githubusercontent.com/76048388/207182179-81c7651a-9f9f-4eaf-935d-f9780952f851.png)
 
 <h3>Instalación del servidor web Apache</h3>
-![image](https://user-images.githubusercontent.com/76048388/207182611-f76ea58c-ad3a-42b1-a126-2689f2e17c2b.png)
-![image](https://user-images.githubusercontent.com/76048388/207182747-8cb52e58-2ab8-45e7-b3c2-bfd81f0ba608.png)
-![image](https://user-images.githubusercontent.com/76048388/207183217-088e6ec7-9187-44bf-85fb-bd4ead1c3b7c.png)
+![image](https://user-images.githubusercontent.com/76048388/207461955-f9b06c6d-cfe6-43d9-bb8f-1758d57cf365.png)
+![image](https://user-images.githubusercontent.com/76048388/207462154-b845ce2b-c664-4aef-990f-3d3a3b90608e.png)
+![image](https://user-images.githubusercontent.com/76048388/207462367-e7a19ffe-7d61-4572-9a42-de33737091d7.png)
 
-<pre><code>sudo apt-get update</code></pre>
-<pre><code>sudo apt install php8.0</code></pre>
-<pre><code>sudo apt install mariadb-server</code></pre>
-<pre><code>sudo apt-get install libapache2-mod-php</code></pre>
-<pre><code>sudo apt install apache2</code></pre>
-<pre><code>ubuntu@ip-172-31-32-150:~$ sudo systemctl status apache2
-● apache2.service - The Apache HTTP Server
-     Loaded: loaded (/lib/systemd/system/apache2.service; enabled; vendor preset: enabled)
-     Active: active (running) since Mon 2022-12-12 23:48:00 UTC; 1min 49s ago
-       Docs: https://httpd.apache.org/docs/2.4/
-   Main PID: 9340 (apache2)
-      Tasks: 6 (limit: 1143)
-     Memory: 11.0M
-        CPU: 51ms
-     CGroup: /system.slice/apache2.service
-             ├─9340 /usr/sbin/apache2 -k start
-             ├─9342 /usr/sbin/apache2 -k start
-             ├─9343 /usr/sbin/apache2 -k start
-             ├─9344 /usr/sbin/apache2 -k start
-             ├─9345 /usr/sbin/apache2 -k start
-             └─9346 /usr/sbin/apache2 -k start
+  <pre><code>sudo yum update -y</code></pre>
+  <pre><code>sudo amazon-linux-extras install php8.0 mariadb10.5</code></pre>
+  <pre><code>sudo yum install -y httpd</code></pre>
+  <pre><code>sudo systemctl start httpd</code></pre>  
+  <pre><code>sudo systemctl enable httpd</code></pre>  
+  <pre><code>sudo usermod -a -G apache ec2-user</code></pre>  
+  <pre><code>exit</code></pre>  
+  <pre><code>[ec2-user@ip-*-*-*-* ~]$ groups
+ec2-user adm wheel apache systemd-journal</code></pre>  
+  <pre><code>sudo chown -R ec2-user:apache /var/www</code></pre>  
+  <pre><code>sudo chmod 2775 /var/www</code></pre>  
+  <pre><code>find /var/www -type d -exec sudo chmod 2775 {} \;</code></pre>  
+  <pre><code>find /var/www -type f -exec sudo chmod 0664 {} \;</code></pre>  
+  <pre><code>cd /var/www
+mkdir inc
+cd inc</code></pre>  
+  <pre><code>nano dbinfo.inc</code></pre>  
+  ![image](https://user-images.githubusercontent.com/76048388/207463470-2f1b4a2e-86ca-4e41-b1ee-0f581938f35f.png)
+  
+  <pre><code>sudo yum install git</code></pre>  
+  <pre><code>git clone https://github.com/AndreaOsma/ProyectoASIR</code></pre>  
+  
+  ![image](https://user-images.githubusercontent.com/76048388/207464402-f3521711-9b45-4ac0-8197-3aa5b7c1f078.png)
 
-Dec 12 23:48:00 ip-172-31-32-150 systemd[1]: Starting The Apache HTTP Server...
-Dec 12 23:48:00 ip-172-31-32-150 systemd[1]: Started The Apache HTTP Server.</code></pre>
-<pre><code>sudo systemctl enable apache2</code></pre>
-<pre><code>sudo groupadd apache</code></pre>
-<pre><code>cat /etc/group</code></pre>
-<pre><code>sudo useradd ec2-user</code></pre>
-<pre><code>sudo usermod -a -G apache ec2-user</code></pre>
-<pre><code>sudo chown -R ec2-user:apache /var/www</code></pre>
-<pre><code>sudo chmod 2775 /var/www
-find /var/www -type d -exec sudo chmod 2775 {} \;</code></pre>
-<pre><code>find /var/www -type f -exec sudo chmod 0664 {} \;</code></pre>
-<pre><code>cd /var/www
-sudo mkdir inc
-cd inc</code></pre>
-<pre><code>nano dbinfo.inc</code></pre>
-<pre><code><?php
+  <pre><code>mv ProyectoASIR/proyecto/foro/* ./
+  rm -r ProyectoASIR/</code></pre>  
+  
+  ![image](https://user-images.githubusercontent.com/76048388/207464639-32df1a13-74c8-46e1-b1b1-1bdb89b80854.png)
 
-define('DB_SERVER', 'db_instance_endpoint');
-define('DB_USERNAME', 'tutorial_user');
-define('DB_PASSWORD', 'master password');
-define('DB_DATABASE', 'sample');
+  ![image](https://user-images.githubusercontent.com/76048388/207464829-278e1f51-88c9-473c-8e0f-eadd94c8229b.png)
 
-?></code></pre>
+  ![image](https://user-images.githubusercontent.com/76048388/207468498-99bd168d-5c4d-4831-b376-da7382d8a883.png)
+  
+  <h3>Añadiendo contenido a la base de datos</h3>
+  
+  <pre><code>yum install mariadb</code></pre>  
+  <pre><code>mysql --version</code></pre>  
+  
+  ![image](https://user-images.githubusercontent.com/76048388/207466191-3d09d6d3-ae84-45ee-8df8-84f87d499e22.png)
 
+  ![image](https://user-images.githubusercontent.com/76048388/207466437-90ff75af-cca0-470d-9820-08742cc4f576.png)
+![image](https://user-images.githubusercontent.com/76048388/207466517-4a605c74-201f-48d3-a137-d4168d0fdd2f.png)
+![image](https://user-images.githubusercontent.com/76048388/207466572-0b8fbdfd-0e5b-4558-81ff-3bf2372a421d.png)
+![image](https://user-images.githubusercontent.com/76048388/207466706-bc40d66f-5c9d-47fd-a899-8ad664b49689.png)
+![image](https://user-images.githubusercontent.com/76048388/207466740-b42cc4d1-9a0e-481c-9958-0bafe4a9acec.png)
+![image](https://user-images.githubusercontent.com/76048388/207466847-1ff5b6f9-1f0c-4859-897d-67eaa6741ec1.png)
+![image](https://user-images.githubusercontent.com/76048388/207467023-8b5e6902-fb2f-4620-a83e-bf6c45a5eacd.png)
+
+![image](https://user-images.githubusercontent.com/76048388/207469031-0330307e-1d5f-4ca4-8c29-5ad9f8e31ba9.png)
+  
+  <h3>Prueba de funcionamiento</h3>
+  ![image](https://user-images.githubusercontent.com/76048388/207469271-00a5dd54-1f16-451e-b6fe-56c9cb655988.png)
+![image](https://user-images.githubusercontent.com/76048388/207469349-8eabfc45-c370-42f3-838d-7b1c2905092d.png)
+![image](https://user-images.githubusercontent.com/76048388/207469387-0702bb71-2c90-41ba-a61f-7c0c6405618d.png)
+
+  
 # Configurando Terraform
 Para esta sección utilizaré Ubuntu 22.04 en modo Terminal.
 En primer lugar utilizaremos estos comandos para guardar el repositorio en el que está Terraform y actualizar la lista de repositorios.
@@ -730,7 +740,8 @@ Como conclusión, queda claro que mediante PHP y mySQL no es difícil hacer un f
   <li>https://developer.hashicorp.com/terraform/tutorials/kubernetes/eks</li>
   <li>https://rm-rf.es/como-conectar-ssh-instancia-aws-ec2-linux/#:~:text=C%C3%B3mo%20conectar%20por%20SSH%20a%20una%20instancia%20AWS,de%20instancia%2C%20IP%20y%20su%20DNS%20p%C3%BAblico%20</li>
   <li>https://developer.hashicorp.com/terraform/tutorials/kubernetes/kubernetes-provider</li>
-  <li>https://docs.aws.amazon.com/es_es/AmazonRDS/latest/UserGuide/TUT_WebAppWithRDS.html</li>
+  <li>https://docs.aws.amazon.com/es_es/AmazonRDS/latest/UserGuide/TUT_WebAppWithRDS.html
+  https://aws.amazon.com/es/getting-started/hands-on/deploy-wordpress-with-amazon-rds/4/</li>
 </ul>
 
 # Autoría
